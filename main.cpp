@@ -1169,18 +1169,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   assert(SUCCEEDED(hr));
 
   // キーボードデバイスの生成
-  IDirectInputDevice8 *keyboard = nullptr;
-  hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
-  assert(SUCCEEDED(hr));
+  //IDirectInputDevice8 *keyboard = nullptr;
+  //hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
+  //assert(SUCCEEDED(hr));
 
-  // 入力データ形式のセット
-  hr = keyboard->SetDataFormat(&c_dfDIKeyboard); // 標準形式
-  assert(SUCCEEDED(hr));
+  //// 入力データ形式のセット
+  //hr = keyboard->SetDataFormat(&c_dfDIKeyboard); // 標準形式
+  //assert(SUCCEEDED(hr));
 
   // 排他制御レベルのセット(どんな時に入力を受け取るか)
-  hr = keyboard->SetCooperativeLevel(
+ /* hr = keyboard->SetCooperativeLevel(
       hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-  assert(SUCCEEDED(hr));
+  assert(SUCCEEDED(hr));*/
 
   // ポインタ
   Input *input = nullptr;
@@ -1189,8 +1189,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   input = new Input();
   input->Initialize(wc.hInstance,hwnd);
 
+// 入力の更新
+  input->Update();
+
   // 入力解放
   delete input;
+
+  
 
   // 三角形２個
   // ID3D12Resource *vertexResource =
@@ -1425,8 +1430,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   
   /// ------------------------ GE3 --------------------------   
   // キーボード入力情報取得開始
-  BYTE key[256] = {};
-  BYTE prekey[256] = {};
+  /*BYTE key[256] = {};
+  BYTE prekey[256] = {};*/
 
   MSG msg{};
   // ウィンドウの×ボタンが押されるまでループ
@@ -1438,17 +1443,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     } else {
       /// ------------------------ GE3 --------------------------
       // キーボード情報の取得開始
-      keyboard->Acquire();
-      /*BYTE key[256] = {};*/
-      // 前の入力を保存
-      memcpy(prekey, key, 256);
-      keyboard->GetDeviceState(sizeof(key), key);
+      //keyboard->Acquire();
+      ///*BYTE key[256] = {};*/
+      //// 前の入力を保存
+      //memcpy(prekey, key, 256);
+      //keyboard->GetDeviceState(sizeof(key), key);
 
       // ゲームの処理
-      if (key[DIK_SPACE] && !prekey[DIK_SPACE]) {
-        /*assert(false && "SPACEが押されたのが確認できました");*/
-        OutputDebugStringA("Press Space\n");
-      }
+      //if (key[DIK_SPACE] && !prekey[DIK_SPACE]) {
+      //  /*assert(false && "SPACEが押されたのが確認できました");*/
+      //  OutputDebugStringA("Press Space\n");
+      //}
 
       // Sprite用のWorldViewProjectionMatrixを作る
       Matrix4x4 worldMatrixSprite =
@@ -1613,10 +1618,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
       hr = commandList->Reset(commandAllocator, nullptr);
       assert(SUCCEEDED(hr));
 
-      if (key[DIK_ESCAPE]) {
+     /* if (key[DIK_ESCAPE]) {
         OutputDebugStringA("Game Loop End\n");
         break;
-      }
+      }*/
     }
 
 #ifdef _DEBUG
