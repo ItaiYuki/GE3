@@ -17,6 +17,16 @@
 #include "externals/DirectXTex/DirectXTex.h"
 #include <fstream>
 #include <sstream>
+#include "Input.h"
+
+/// ------------------------------- GE3
+/// -------------------------------------------
+// DirectInputインクルード
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
+
+#pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "dxguid.lib")
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
                                                              UINT msg,
@@ -366,24 +376,24 @@ std::wstring ConvertString(const std::string &str) {
 }
 
 //// １Textureデータを読む
-//DirectX::ScratchImage LoadTexture(const std::string &filePath) {
-//  // テクスチャファイルを読んでプログラムで扱えるようにする
-//  DirectX::ScratchImage image{};
-//  std::wstring filePathW = ConvertString(filePath);
-//  HRESULT hr = DirectX::LoadFromWICFile(
-//      filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_RGB, nullptr, image);
-//  assert(SUCCEEDED(hr));
+// DirectX::ScratchImage LoadTexture(const std::string &filePath) {
+//   // テクスチャファイルを読んでプログラムで扱えるようにする
+//   DirectX::ScratchImage image{};
+//   std::wstring filePathW = ConvertString(filePath);
+//   HRESULT hr = DirectX::LoadFromWICFile(
+//       filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_RGB, nullptr, image);
+//   assert(SUCCEEDED(hr));
 //
-//  // ミップマップの作成
-//  DirectX::ScratchImage mipImages{};
-//  hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(),
-//                                image.GetMetadata(), DirectX::TEX_FILTER_SRGB,
-//                                0, mipImages);
-//  assert(SUCCEEDED(hr));
+//   // ミップマップの作成
+//   DirectX::ScratchImage mipImages{};
+//   hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(),
+//                                 image.GetMetadata(),
+//                                 DirectX::TEX_FILTER_SRGB, 0, mipImages);
+//   assert(SUCCEEDED(hr));
 //
-//  // ミップマップ付きのデータを返す
-//  return mipImages;
-//}
+//   // ミップマップ付きのデータを返す
+//   return mipImages;
+// }
 
 // ２DirectX12のTextureResourceを作る
 ID3D12Resource *CreateTextureResource(ID3D12Device *device,
@@ -437,6 +447,7 @@ void UploadTextureData(ID3D12Resource *texture,
                                     UINT(img->slicePitch) // １枚サイズ
         );
     assert(SUCCEEDED(hr));
+    /*assert(false && "assertのテストだよ");*/
   }
 }
 
@@ -568,7 +579,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 }
 
 void Log(const std::string &message) { OutputDebugStringA(message.c_str()); }
-
 
 // wstring->string
 std::string ConvertString(const std::wstring &str) {
@@ -1102,12 +1112,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   rasteriZerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
   // Shaderをコンパイルする
-  IDxcBlob *vertexShaderBlob = CompileShader(
-      L"resources/shaders/Object3D.VS.hlsl", L"vs_6_0", dxcUtils, dxcCompiler, includehandler);
+  IDxcBlob *vertexShaderBlob =
+      CompileShader(L"resources/shaders/Object3D.VS.hlsl", L"vs_6_0", dxcUtils,
+                    dxcCompiler, includehandler);
   assert(vertexShaderBlob != nullptr);
 
-  IDxcBlob *pixelShaderBlob = CompileShader(
-      L"resources/shaders/Object3D.PS.hlsl", L"ps_6_0", dxcUtils, dxcCompiler, includehandler);
+  IDxcBlob *pixelShaderBlob =
+      CompileShader(L"resources/shaders/Object3D.PS.hlsl", L"ps_6_0", dxcUtils,
+                    dxcCompiler, includehandler);
   assert(pixelShaderBlob != nullptr);
 
   D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
@@ -1148,6 +1160,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   hr = device->CreateGraphicsPipelineState(
       &graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
   assert(SUCCEEDED(hr));
+
+  /// ---------------------------------- GE3 ------------------------
+  // Direct Input 初期化
+  IDirectInput8 *directInput = nullptr;
+  hr = DirectInput8Create(wc.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
+                          (void **)&directInput, nullptr);
+  assert(SUCCEEDED(hr));
+
+  // キーボードデバイスの生成
+  IDirectInputDevice8 *keyboard = nullptr;
+  hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
+  assert(SUCCEEDED(hr));
+
+  // 入力データ形式のセット
+  hr = keyboard->SetDataFormat(&c_dfDIKeyboard); // 標準形式
+  assert(SUCCEEDED(hr));
+
+  // 排他制御レベルのセット(どんな時に入力を受け取るか)
+  hr = keyboard->SetCooperativeLevel(
+      hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+  assert(SUCCEEDED(hr));
+
+  // ポインタ
+  Input *input = nullptr;
+
+  // 入力の初期化
+  input = new Input();
+  input->Initialize(wc.hInstance,hwnd);
+
+  // 入力解放
+  delete input;
 
   // 三角形２個
   // ID3D12Resource *vertexResource =
@@ -1379,6 +1422,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   indexDataSprite[5] = 2;
 
   // --------------------------------------------------------------------------
+  
+  /// ------------------------ GE3 --------------------------   
+  // キーボード入力情報取得開始
+  BYTE key[256] = {};
+  BYTE prekey[256] = {};
 
   MSG msg{};
   // ウィンドウの×ボタンが押されるまでループ
@@ -1388,7 +1436,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     } else {
+      /// ------------------------ GE3 --------------------------
+      // キーボード情報の取得開始
+      keyboard->Acquire();
+      /*BYTE key[256] = {};*/
+      // 前の入力を保存
+      memcpy(prekey, key, 256);
+      keyboard->GetDeviceState(sizeof(key), key);
+
       // ゲームの処理
+      if (key[DIK_SPACE] && !prekey[DIK_SPACE]) {
+        /*assert(false && "SPACEが押されたのが確認できました");*/
+        OutputDebugStringA("Press Space\n");
+      }
 
       // Sprite用のWorldViewProjectionMatrixを作る
       Matrix4x4 worldMatrixSprite =
@@ -1552,6 +1612,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
       assert(SUCCEEDED(hr));
       hr = commandList->Reset(commandAllocator, nullptr);
       assert(SUCCEEDED(hr));
+
+      if (key[DIK_ESCAPE]) {
+        OutputDebugStringA("Game Loop End\n");
+        break;
+      }
     }
 
 #ifdef _DEBUG
