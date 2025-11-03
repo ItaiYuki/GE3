@@ -1430,8 +1430,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   
   /// ------------------------ GE3 --------------------------   
   // キーボード入力情報取得開始
-  /*BYTE key[256] = {};
-  BYTE prekey[256] = {};*/
+  BYTE key[256] = {};
+  BYTE prekey[256] = {};
 
   MSG msg{};
   // ウィンドウの×ボタンが押されるまでループ
@@ -1443,17 +1443,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     } else {
       /// ------------------------ GE3 --------------------------
       // キーボード情報の取得開始
-      //keyboard->Acquire();
-      ///*BYTE key[256] = {};*/
-      //// 前の入力を保存
-      //memcpy(prekey, key, 256);
-      //keyboard->GetDeviceState(sizeof(key), key);
+      /*keyboard->Acquire();*/
+      /*BYTE key[256] = {};*/
+      // 前の入力を保存
+      memcpy(prekey, key, 256);
+      /*keyboard->GetDeviceState(sizeof(key), key);*/
 
-      // ゲームの処理
-      //if (key[DIK_SPACE] && !prekey[DIK_SPACE]) {
-      //  /*assert(false && "SPACEが押されたのが確認できました");*/
-      //  OutputDebugStringA("Press Space\n");
-      //}
+       // ゲームの処理
+      if (key[DIK_SPACE] && !prekey[DIK_SPACE]) {
+        /*assert(false && "SPACEが押されたのが確認できました");*/
+        OutputDebugStringA("Press Space\n");
+      }
 
       // Sprite用のWorldViewProjectionMatrixを作る
       Matrix4x4 worldMatrixSprite =
@@ -1618,7 +1618,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
       hr = commandList->Reset(commandAllocator, nullptr);
       assert(SUCCEEDED(hr));
 
-     /* if (key[DIK_ESCAPE]) {
+      /*if (input->Pushkey[DIK_ESCAPE]) {
         OutputDebugStringA("Game Loop End\n");
         break;
       }*/

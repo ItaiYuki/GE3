@@ -5,37 +5,58 @@
 #pragma comment(lib, "dxguid.lib")
 
 void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
-  /// Dirrect Input 初期化
-
   HRESULT result;
 
-  // DirectInputのインスタンス生成
-  ComPtr<IDirectInput8> directInput = nullptr;
-
+  // DirectInputオブジェクトの作成
   result = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
                               (void **)&directInput, nullptr);
   assert(SUCCEEDED(result));
-  // キーボードデバイス生成
-  /*ComPtr<IDirectInputDevice8> keyboard;*/ // <- 引っ越し済み
 
+  // キーボードデバイスの作成
   result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
   assert(SUCCEEDED(result));
+
   // 入力データ形式のセット
   result = keyboard->SetDataFormat(&c_dfDIKeyboard);
   assert(SUCCEEDED(result));
-  // 排他制御レベルのセット
+
+  // 協調レベルの設定
   result = keyboard->SetCooperativeLevel(
       hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
   assert(SUCCEEDED(result));
+
+  // 入力状態の初期化
+  memset(key, 0, sizeof(key));
+  memset(keyPre, 0, sizeof(keyPre));
 }
 
 void Input::Update() {
-  /// キーボードの入力状態の初期化
+  HRESULT result;
 
-    // キーボード取得開始
-  keyboard->Acquire();
-  // 全キーの入力情報を取得する
-  BYTE key[256] = {};
-  keyboard->GetDeviceState(sizeof(key), key);
+  // 前回のキー状態を保存
+  memcpy(keyPre, key, sizeof(key));
 
+  // キーボード入力の取得開始
+  result = keyboard->Acquire();
+  if (FAILED(result)) {
+    // フォーカスが外れているなどで失敗した場合は無視
+    return;
+  }
+
+  // 現在の全キー状態を取得
+  result = keyboard->GetDeviceState(sizeof(key), key);
+  if (FAILED(result)) {
+    // 取得失敗時も安全にスルー
+    memset(key, 0, sizeof(key));
+  }
+}
+
+bool Input::PushKey(BYTE keyNumber) {
+  // キーが押されている間 true を返す
+  return key[keyNumber] != 0;
+}
+
+bool Input::TriggerKey(BYTE keyNumber) {
+  // 今フレーム押されていて、前フレームは押されていなかった場合 true
+  return (key[keyNumber] != 0 && keyPre[keyNumber] == 0);
 }
