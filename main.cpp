@@ -10,7 +10,6 @@
 #include <dxgidebug.h>
 #include <format>
 #include <string>
-#pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxcompiler.lib")
@@ -25,19 +24,10 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
-#pragma comment(lib, "dinput8.lib")
-#pragma comment(lib, "dxguid.lib")
-
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
                                                              UINT msg,
                                                              WPARAM wParam,
                                                              LPARAM lParam);
-
-#pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "dxcompiler.lib")
-
 struct Vector4 {
   float x;
   float y;
