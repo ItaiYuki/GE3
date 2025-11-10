@@ -10,7 +10,6 @@
 #include <dxgidebug.h>
 #include <format>
 #include <string>
-#pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxcompiler.lib")
@@ -25,18 +24,7 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
-#pragma comment(lib, "dinput8.lib")
-#pragma comment(lib, "dxguid.lib")
-
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
-                                                             UINT msg,
-                                                             WPARAM wParam,
-                                                             LPARAM lParam);
-
-#pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "dxcompiler.lib")
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 struct Vector4 {
   float x;
@@ -851,8 +839,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
                            nullptr               // オプション
   );
 
+
+
   // ウィンドウを表示する
   ShowWindow(hwnd, SW_SHOW);
+
+
 
 #ifdef _DEBUG
   ID3D12Debug1 *debugController = nullptr;
@@ -1433,6 +1425,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   BYTE key[256] = {};
   BYTE prekey[256] = {};
 
+
+
   MSG msg{};
   // ウィンドウの×ボタンが押されるまでループ
   while (msg.message != WM_QUIT) {
@@ -1441,6 +1435,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     } else {
+
+
       /// ------------------------ GE3 --------------------------
       // キーボード情報の取得開始
       /*keyboard->Acquire();*/
@@ -1701,9 +1697,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
   wvpResource->Release();
   materialResource->Release();
-  CloseWindow(hwnd);
-
-  // リソースリークチェック
+  
+// リソースリークチェック
   IDXGIDebug1 *debug;
   if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
     debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
@@ -1712,7 +1707,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     debug->Release();
   }
 
+
+  CloseWindow(hwnd);
   CoUninitialize();
+
 
   return 0;
 }
