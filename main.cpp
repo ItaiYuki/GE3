@@ -13,10 +13,10 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxcompiler.lib")
+#include "Input.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #include <fstream>
 #include <sstream>
-#include "Input.h"
 
 /// ------------------------------- GE3
 /// -------------------------------------------
@@ -1159,33 +1159,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   assert(SUCCEEDED(hr));
 
   // キーボードデバイスの生成
-  //IDirectInputDevice8 *keyboard = nullptr;
-  //hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
-  //assert(SUCCEEDED(hr));
+  // IDirectInputDevice8 *keyboard = nullptr;
+  // hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
+  // assert(SUCCEEDED(hr));
 
   //// 入力データ形式のセット
-  //hr = keyboard->SetDataFormat(&c_dfDIKeyboard); // 標準形式
-  //assert(SUCCEEDED(hr));
+  // hr = keyboard->SetDataFormat(&c_dfDIKeyboard); // 標準形式
+  // assert(SUCCEEDED(hr));
 
   // 排他制御レベルのセット(どんな時に入力を受け取るか)
- /* hr = keyboard->SetCooperativeLevel(
-      hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-  assert(SUCCEEDED(hr));*/
+  /* hr = keyboard->SetCooperativeLevel(
+       hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+   assert(SUCCEEDED(hr));*/
 
   // ポインタ
   Input *input = nullptr;
 
-  // 入力の初期化
-  input = new Input();
-  input->Initialize(wc.hInstance,hwnd);
-
-// 入力の更新
+  // 入力の更新
   input->Update();
 
-  // 入力解放
-  delete input;
-
-  
+  // 入力の初期化
+  input = new Input();
+  input->Initialize(wc.hInstance, hwnd);
 
   // 三角形２個
   // ID3D12Resource *vertexResource =
@@ -1417,8 +1412,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   indexDataSprite[5] = 2;
 
   // --------------------------------------------------------------------------
-  
-  /// ------------------------ GE3 --------------------------   
+
+  /// ------------------------ GE3 --------------------------
   // キーボード入力情報取得開始
   BYTE key[256] = {};
   BYTE prekey[256] = {};
@@ -1439,7 +1434,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
       memcpy(prekey, key, 256);
       /*keyboard->GetDeviceState(sizeof(key), key);*/
 
-       // ゲームの処理
+      // ゲームの処理
       if (key[DIK_SPACE] && !prekey[DIK_SPACE]) {
         /*assert(false && "SPACEが押されたのが確認できました");*/
         OutputDebugStringA("Press Space\n");
@@ -1688,6 +1683,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #ifdef _DEBUG
   debugController->Release();
 #endif
+
+  // 入力解放
+  delete input;
 
   wvpResource->Release();
   materialResource->Release();
