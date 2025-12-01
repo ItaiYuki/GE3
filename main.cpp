@@ -2,23 +2,25 @@
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
 #include <Windows.h>
-#include <cassert>
+//#include <cassert>
 #include <cstdint>
-#include <d3d12.h>
+
 #include <dxcapi.h>
-#include <dxgi1_6.h>
+
 #include <dxgidebug.h>
 #include <format>
 #include <string>
 #pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
+//#pragma comment(lib, "d3d12.lib")
+//#pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxcompiler.lib")
 #include "Input.h"
 #include "WinApp.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #include <fstream>
 #include <sstream>
+#include "DirectXCommon.h"
+
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd,
                                                              UINT msg,
                                                              WPARAM wParam,
@@ -725,9 +727,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   
     // ポインタ
   WinApp *winApp = nullptr;
+    DirectXCommon *dxCommon = nullptr;
+
   // WindowsAPIの初期化
   winApp = new WinApp();
   winApp->Initialize();
+
+  // DirectXの初期化
+  dxCommon = new DirectXCommon();
+  dxCommon->Initialize();
 
 #ifdef _DEBUG
   ID3D12Debug1 *debugController = nullptr;
@@ -882,6 +890,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   // FenceのSignalを待つためのイベントを作成する
   HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   assert(fenceEvent != nullptr);
+
+
+  ///////////////////////////////////////////////////////////// 初期化ここまで
 
   // dxcCompilerを初期化
   IDxcUtils *dxcUtils = nullptr;
@@ -1430,11 +1441,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     //--------------------------------------
 
+
+
+    /////////////////////////////////////////////////////////////////////
+
     // Spriteの描画。変更が必要なものだけ変更
     commandList->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
     // TransformationMatrixCBufferの場所を設定
     commandList->SetGraphicsRootConstantBufferView(
         1, transformtionMatirxResourceSprite->GetGPUVirtualAddress());
+
+
+    //////////////////////////////////////////////////////////////////////
+
     // 描画！（DrawInstanced(DrawCall/ドローコル）
     commandList->DrawInstanced(6, 1, 0, 0);
     // 描画!(DrawCall/ドローコル）６個のインデックスを使用し１つのインスタンスを描画。その他は当面０で良い
@@ -1562,6 +1581,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   // WindowsAPI解放
   delete winApp;
   winApp = nullptr;
+
+  // DirectX解放
+  delete dxCommon;
 
 #ifdef _DEBUG
   debugController->Release();
