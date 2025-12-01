@@ -1,38 +1,35 @@
 #pragma once
-#include <windows.h>
+#include <Windows.h>
 #include <wrl.h>
 
-#define DIRECTINPUT_VERSION 0x0800 // DirectInput‚Ìƒo[ƒWƒ‡ƒ“w’è
+#define DIRECTINPUT_VERSION 0x0800 // DirectInputã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³æŒ‡å®š
 #include <dinput.h>
+
+#include "WinApp.h"
 
 class Input {
 public:
-  /// <summary>
-  /// ‰Šú‰»
-  /// </summary>
-	
-  void Initialize(HINSTANCE hInstance, HWND hwnd);
-  /// <summary>
-  // XV
-  /// </summary>
+  // åˆæœŸåŒ–å‡¦ç†
+  void Initialize(WinApp *winApp);
+
+  // æ›´æ–°å‡¦ç†
   void Update();
 
-// namespaceÈ—ª
+  // namespaceçœç•¥
   template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-  bool PushKey(BYTE keyNumber); 
+  bool PushKey(BYTE keyNumber);
   bool TriggerKey(BYTE keyNumber);
 
-private:
-  /// directInput
-
-  /// keyboardDevice
+private: // ãƒ¡ãƒ³ãƒå¤‰æ•°
+  // ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ãƒ‡ãƒã‚¤ã‚¹
   ComPtr<IDirectInputDevice8> keyboard;
+  // DirectInputã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆ
   ComPtr<IDirectInput8> directInput;
-  /// ŠeƒL[‚Ì“ü—Íó‘Ô
 
-  // iframe‘O‚ÌŠeƒL[‚Ì“ü—Íó‘Ô
   BYTE key[256] = {};
   BYTE keyPre[256] = {};
 
+  // WindowsAPI
+  WinApp *winApp_ = nullptr;
 };

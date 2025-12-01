@@ -4,59 +4,51 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
-void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
+void Input::Initialize(WinApp *winApp) {
+  // å€Ÿã‚Šã¦ããŸWinAppã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¨˜éŒ²
+  this->winApp_ = winApp;
+
   HRESULT result;
 
-  // DirectInputƒIƒuƒWƒFƒNƒg‚Ìì¬
-  result = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
-                              (void **)&directInput, nullptr);
+  // DirectInput ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä½œæˆ
+  result =
+      DirectInput8Create(winApp->GetHInstance(), DIRECTINPUT_VERSION,
+                         IID_IDirectInput8, (void **)&directInput, nullptr);
   assert(SUCCEEDED(result));
 
-  // ƒL[ƒ{[ƒhƒfƒoƒCƒX‚Ìì¬
+  // ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãƒ‡ãƒã‚¤ã‚¹ç”Ÿæˆï¼ˆâ†ãƒ¡ãƒ³ãƒå¤‰æ•° keyboard ã‚’ä½¿ã†ï¼‰
   result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
   assert(SUCCEEDED(result));
 
-  // “ü—Íƒf[ƒ^Œ`®‚ÌƒZƒbƒg
+  // å…¥åŠ›ãƒ‡ãƒ¼ã‚¿å½¢å¼ã®ã‚»ãƒƒãƒˆ
   result = keyboard->SetDataFormat(&c_dfDIKeyboard);
   assert(SUCCEEDED(result));
 
-  // ‹¦’²ƒŒƒxƒ‹‚Ìİ’è
-  result = keyboard->SetCooperativeLevel(
-      hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+  // æ’ä»–åˆ¶å¾¡ãƒ¬ãƒ™ãƒ«ã®ã‚»ãƒƒãƒˆ
+  result = keyboard->SetCooperativeLevel(winApp->GetHwnd(),
+                                         DISCL_FOREGROUND | DISCL_NONEXCLUSIVE |
+                                             DISCL_NOWINKEY);
   assert(SUCCEEDED(result));
-
-  // “ü—Íó‘Ô‚Ì‰Šú‰»
-  memset(key, 0, sizeof(key));
-  memset(keyPre, 0, sizeof(keyPre));
 }
 
 void Input::Update() {
-  HRESULT result;
-
-  // ‘O‰ñ‚ÌƒL[ó‘Ô‚ğ•Û‘¶
   memcpy(keyPre, key, sizeof(key));
-
-  // ƒL[ƒ{[ƒh“ü—Í‚Ìæ“¾ŠJn
-  result = keyboard->Acquire();
-  if (FAILED(result)) {
-    // ƒtƒH[ƒJƒX‚ªŠO‚ê‚Ä‚¢‚é‚È‚Ç‚Å¸”s‚µ‚½ê‡‚Í–³‹
-    return;
-  }
-
-  // Œ»İ‚Ì‘SƒL[ó‘Ô‚ğæ“¾
-  result = keyboard->GetDeviceState(sizeof(key), key);
-  if (FAILED(result)) {
-    // æ“¾¸”s‚àˆÀ‘S‚ÉƒXƒ‹[
-    memset(key, 0, sizeof(key));
-  }
+  // ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å–å¾—é–‹å§‹
+  keyboard->Acquire();
+  // å…¨ã‚­ãƒ¼ã®å…¥åŠ›æƒ…å ±ã‚’å–å¾—ã™ã‚‹
+  keyboard->GetDeviceState(sizeof(key), key);
 }
 
 bool Input::PushKey(BYTE keyNumber) {
-  // ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚éŠÔ true ‚ğ•Ô‚·
-  return key[keyNumber] != 0;
+  // æŒ‡å®šã‚­ãƒ¼ã‚’æŠ¼ã—ã¦ã„ã‚Œã°trueã‚’è¿”ã™
+  if (key[keyNumber]) {
+    return true;
+  }
+  // ãã†ã§ãªã‘ã‚Œã°Falseã‚’è¿”ã™
+  return false;
 }
 
 bool Input::TriggerKey(BYTE keyNumber) {
-  // ¡ƒtƒŒ[ƒ€‰Ÿ‚³‚ê‚Ä‚¢‚ÄA‘OƒtƒŒ[ƒ€‚Í‰Ÿ‚³‚ê‚Ä‚¢‚È‚©‚Á‚½ê‡ true
+  // ä»Šãƒ•ãƒ¬ãƒ¼ãƒ æŠ¼ã•ã‚Œã¦ã„ã¦ã€å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã¯æŠ¼ã•ã‚Œã¦ã„ãªã‹ã£ãŸå ´åˆ true
   return (key[keyNumber] != 0 && keyPre[keyNumber] == 0);
 }
