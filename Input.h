@@ -1,23 +1,23 @@
-#pragma once
+ï»¿#pragma once
 #include <windows.h>
 #include <wrl.h>
 
-#define DIRECTINPUT_VERSION 0x0800 // DirectInput‚Ìƒo[ƒWƒ‡ƒ“w’è
+#define DIRECTINPUT_VERSION 0x0800 // DirectInputã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³æŒ‡å®š
 #include <dinput.h>
 
 class Input {
 public:
   /// <summary>
-  /// ‰Šú‰»
+  /// åˆæœŸåŒ–
   /// </summary>
 	
   void Initialize(HINSTANCE hInstance, HWND hwnd);
   /// <summary>
-  // XV
+  // æ›´æ–°
   /// </summary>
   void Update();
 
-// namespaceÈ—ª
+// namespaceçœç•¥
   template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
   bool PushKey(BYTE keyNumber); 
@@ -29,9 +29,9 @@ private:
   /// keyboardDevice
   ComPtr<IDirectInputDevice8> keyboard;
   ComPtr<IDirectInput8> directInput;
-  /// ŠeƒL[‚Ì“ü—Íó‘Ô
+  /// å„ã‚­ãƒ¼ã®å…¥åŠ›çŠ¶æ…‹
 
-  // iframe‘O‚ÌŠeƒL[‚Ì“ü—Íó‘Ô
+  // iframeå‰ã®å„ã‚­ãƒ¼ã®å…¥åŠ›çŠ¶æ…‹
   BYTE key[256] = {};
   BYTE keyPre[256] = {};
 

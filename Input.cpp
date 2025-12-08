@@ -1,4 +1,4 @@
-#include "Input.h"
+ï»¿#include "Input.h"
 #include <cassert>
 
 #pragma comment(lib, "dinput8.lib")
@@ -7,25 +7,25 @@
 void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
   HRESULT result;
 
-  // DirectInputƒIƒuƒWƒFƒNƒg‚Ìì¬
+  // DirectInputã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
   result = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
                               (void **)&directInput, nullptr);
   assert(SUCCEEDED(result));
 
-  // ƒL[ƒ{[ƒhƒfƒoƒCƒX‚Ìì¬
+  // ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®ä½œæˆ
   result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
   assert(SUCCEEDED(result));
 
-  // “ü—Íƒf[ƒ^Œ`®‚ÌƒZƒbƒg
+  // å…¥åŠ›ãƒ‡ãƒ¼ã‚¿å½¢å¼ã®ã‚»ãƒƒãƒˆ
   result = keyboard->SetDataFormat(&c_dfDIKeyboard);
   assert(SUCCEEDED(result));
 
-  // ‹¦’²ƒŒƒxƒ‹‚Ìİ’è
+  // å”èª¿ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
   result = keyboard->SetCooperativeLevel(
       hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
   assert(SUCCEEDED(result));
 
-  // “ü—Íó‘Ô‚Ì‰Šú‰»
+  // å…¥åŠ›çŠ¶æ…‹ã®åˆæœŸåŒ–
   memset(key, 0, sizeof(key));
   memset(keyPre, 0, sizeof(keyPre));
 }
@@ -33,30 +33,30 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 void Input::Update() {
   HRESULT result;
 
-  // ‘O‰ñ‚ÌƒL[ó‘Ô‚ğ•Û‘¶
+  // å‰å›ã®ã‚­ãƒ¼çŠ¶æ…‹ã‚’ä¿å­˜
   memcpy(keyPre, key, sizeof(key));
 
-  // ƒL[ƒ{[ƒh“ü—Í‚Ìæ“¾ŠJn
+  // ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å…¥åŠ›ã®å–å¾—é–‹å§‹
   result = keyboard->Acquire();
   if (FAILED(result)) {
-    // ƒtƒH[ƒJƒX‚ªŠO‚ê‚Ä‚¢‚é‚È‚Ç‚Å¸”s‚µ‚½ê‡‚Í–³‹
+    // ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ãŒå¤–ã‚Œã¦ã„ã‚‹ãªã©ã§å¤±æ•—ã—ãŸå ´åˆã¯ç„¡è¦–
     return;
   }
 
-  // Œ»İ‚Ì‘SƒL[ó‘Ô‚ğæ“¾
+  // ç¾åœ¨ã®å…¨ã‚­ãƒ¼çŠ¶æ…‹ã‚’å–å¾—
   result = keyboard->GetDeviceState(sizeof(key), key);
   if (FAILED(result)) {
-    // æ“¾¸”s‚àˆÀ‘S‚ÉƒXƒ‹[
+    // å–å¾—å¤±æ•—æ™‚ã‚‚å®‰å…¨ã«ã‚¹ãƒ«ãƒ¼
     memset(key, 0, sizeof(key));
   }
 }
 
 bool Input::PushKey(BYTE keyNumber) {
-  // ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚éŠÔ true ‚ğ•Ô‚·
+  // ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹é–“ true ã‚’è¿”ã™
   return key[keyNumber] != 0;
 }
 
 bool Input::TriggerKey(BYTE keyNumber) {
-  // ¡ƒtƒŒ[ƒ€‰Ÿ‚³‚ê‚Ä‚¢‚ÄA‘OƒtƒŒ[ƒ€‚Í‰Ÿ‚³‚ê‚Ä‚¢‚È‚©‚Á‚½ê‡ true
+  // ä»Šãƒ•ãƒ¬ãƒ¼ãƒ æŠ¼ã•ã‚Œã¦ã„ã¦ã€å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã¯æŠ¼ã•ã‚Œã¦ã„ãªã‹ã£ãŸå ´åˆ true
   return (key[keyNumber] != 0 && keyPre[keyNumber] == 0);
 }

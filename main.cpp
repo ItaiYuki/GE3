@@ -1,4 +1,4 @@
-#include "externals/imgui/imgui.h"
+﻿#include "externals/imgui/imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
 #include <Windows.h>
@@ -1175,12 +1175,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   // ポインタ
   Input *input = nullptr;
 
-  // 入力の更新
-  input->Update();
-
   // 入力の初期化
   input = new Input();
   input->Initialize(wc.hInstance, hwnd);
+
+  // 入力の更新
+  input->Update();
 
   // 三角形２個
   // ID3D12Resource *vertexResource =
@@ -1684,12 +1684,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   debugController->Release();
 #endif
 
-  // 入力解放
-  delete input;
-
   wvpResource->Release();
   materialResource->Release();
   CloseWindow(hwnd);
+
+  // 入力解放
+  delete input;
 
   // リソースリークチェック
   IDXGIDebug1 *debug;
