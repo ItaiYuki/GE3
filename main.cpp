@@ -2,17 +2,17 @@
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
 #include <Windows.h>
-#include <cassert>
+//#include <cassert>
 #include <cstdint>
-#include <d3d12.h>
 #include <dxcapi.h>
-#include <dxgi1_6.h>
+//#include <d3d12.h>
+//#include <dxgi1_6.h>
 #include <dxgidebug.h>
 #include <format>
 #include <string>
 #pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
+//#pragma comment(lib, "d3d12.lib")
+//#pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxcompiler.lib")
 #include "Input.h"
 #include "WinApp.h"
