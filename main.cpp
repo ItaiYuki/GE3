@@ -1,4 +1,4 @@
-#include "externals/imgui/imgui.h"
+﻿#include "externals/imgui/imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
 #include <Windows.h>
@@ -11,8 +11,8 @@
 #include <format>
 #include <string>
 #pragma comment(lib, "dxguid.lib")
-//#pragma comment(lib, "d3d12.lib")
-//#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxcompiler.lib")
 #include "Input.h"
 #include "WinApp.h"
@@ -26,10 +26,9 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd,
                                                              WPARAM wParam,
                                                              LPARAM lParam);
 
-#define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
 
-#pragma comment(lib, "dinput8.lib")
+#include <d3d12.h>
+#include <dxgi1_6.h>
 
 struct Vector4 {
   float x;
@@ -727,15 +726,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   
     // ポインタ
   WinApp *winApp = nullptr;
-    DirectXCommon *dxCommon = nullptr;
+    /*DirectXCommon *dxCommon = nullptr;*/
 
   // WindowsAPIの初期化
   winApp = new WinApp();
   winApp->Initialize();
 
   // DirectXの初期化
-  dxCommon = new DirectXCommon();
-  dxCommon->Initialize();
+  /*dxCommon = new DirectXCommon();
+  dxCommon->Initialize();*/
 
 #ifdef _DEBUG
   ID3D12Debug1 *debugController = nullptr;
@@ -1583,7 +1582,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   winApp = nullptr;
 
   // DirectX解放
-  delete dxCommon;
+  /*delete dxCommon;*/
 
 #ifdef _DEBUG
   debugController->Release();
