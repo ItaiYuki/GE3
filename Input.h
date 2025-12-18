@@ -23,9 +23,10 @@ public:
 
 private: // メンバ変数
   // キーボードのデバイス
-  ComPtr<IDirectInputDevice8> keyboard;
+  ComPtr<IDirectInputDevice8A>
+      keyboard; // 修正: IDirectInputDevice8W -> IDirectInputDevice8A
   // DirectInputのインスタンス生成
-  ComPtr<IDirectInput8> directInput;
+  ComPtr<IDirectInput8A> directInput; // 修正: IDirectInput8W -> IDirectInput8A
 
   BYTE key[256] = {};
   BYTE keyPre[256] = {};

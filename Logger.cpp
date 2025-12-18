@@ -1,6 +1,6 @@
+ï»¿#include "Logger.h"
+#include <Windows.h>
+
 namespace Logger {
- void Log(const std::string &message) {
-  // o—ÍƒEƒBƒ“ƒhƒE‚É•¶š—ñ‚ğ•\¦
-  OutputDebugStringA(message.c_str());
- }
+void Log(const std::string &message) { OutputDebugStringA(message.c_str()); }
 } 
