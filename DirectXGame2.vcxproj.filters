@@ -19,6 +19,24 @@
     <Filter Include="NewFilter1">
       <UniqueIdentifier>{4b5f5f3b-3516-418d-8440-4b9777b0e117}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2d">
+      <UniqueIdentifier>{b3b3f87d-2586-4a9a-ad4f-47a2e3032b3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3d">
+      <UniqueIdentifier>{3b510846-528e-4a7e-8e1a-7e2979f7b1d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="audio">
+      <UniqueIdentifier>{152246ac-141c-4443-be00-9ac6f5ea2c86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{42c4eef0-3763-4823-84fc-a6abd03eab63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io">
+      <UniqueIdentifier>{2367a7fd-b4f2-4590-83cd-9597847de3cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{bce9fc78-b1dd-4cc6-857d-dc124ca1f417}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -45,23 +63,20 @@
     <ClCompile Include="externals\imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\base\DirectXCommon.cpp">
+      <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="WinApp.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\base\Logger.cpp">
+      <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXCommon.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\base\StringUtility.cpp">
+      <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="Logger.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\base\WinApp.cpp">
+      <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="SturingUtility.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="StringUtility.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\io\Input.cpp">
+      <Filter>io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -93,23 +108,20 @@
     <ClInclude Include="externals\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\base\DirectXCommon.h">
+      <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="WinApp.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\base\Logger.h">
+      <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="DirectXCommon.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\base\StringUtility.h">
+      <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="Logger.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\base\WinApp.h">
+      <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="SturingUtility.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="StringUtility.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\io\Input.h">
+      <Filter>io</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

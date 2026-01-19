@@ -1,4 +1,4 @@
-#include "StringUtility.h"
+ï»¿#include "StringUtility.h"
 #include <Windows.h>
 
 namespace StringUtility {
@@ -19,7 +19,7 @@ std::wstring ConvertString(const std::string &str) {
   MultiByteToWideChar(CP_UTF8, 0, str.data(), static_cast<int>(str.size()),
                       result.data(), sizeNeeded);
 
-  return result; // C³: ³‚µ‚¢’l‚ğ•Ô‚·
+  return result; // ä¿®æ­£: æ­£ã—ã„å€¤ã‚’è¿”ã™
 }
 
 std::string ConvertString(const std::wstring &str) {

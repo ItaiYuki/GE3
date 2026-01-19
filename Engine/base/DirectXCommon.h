@@ -5,6 +5,7 @@
 #include "externals/imgui/imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
+#include "externals/DirectXTex/DirectXTex.h"
 #include <Windows.h>
 #include <array>
 #include <cassert>
@@ -78,8 +79,31 @@ public:
   Microsoft::WRL::ComPtr<ID3D12Device> device;
 
 private: // メンバ変数
-  // 各種デスクリプタヒープ
+// getter
+  ID3D12Device *GetDevice() const { return device.Get(); }
+  ID3D12GraphicsCommandList *GetCommandList() const {
+    return commandList.Get();
+  }
 
+// シェーダーのコンパイル
+  Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
+      const std::wstring &filePath,
+      const wchar_t*profile
+      );
+
+  // バッファリソースの生成
+  Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+
+  // テクスチャソースの生成
+  Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata &metadata);
+
+  // テクスチャデータの転送
+  void UploadTextureData(const Microsoft::WRL::ComPtr<ID3D12Resource> &texture,
+                         const DirectX::ScratchImage &mipImages);
+
+
+
+  // 各種デスクリプタヒープ
   Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>
   CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors,
                        bool shaderVisible);
