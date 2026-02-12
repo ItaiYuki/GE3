@@ -45,7 +45,6 @@ void DirectXCommon::CreateDevice() {
   HRESULT hr;
 
   // DXGIファクトリーの生成
-  IDXGIFactory7 *dxgiFactory = nullptr;
   hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
   assert(SUCCEEDED(hr));
 
@@ -325,9 +324,13 @@ DirectXCommon::GetSRVGPUDescriptorHandle(uint32_t index) {
 ///  深度ステンシルビューの初期化
 /// =========================================
 void DirectXCommon::CreateDepthStencilView() {
-  // DSV用の設定
+  D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
+  dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+  dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 
-  // DSVをデスクリプタヒープの先頭に作る
+  device->CreateDepthStencilView(
+      nullptr, &dsvDesc,
+      dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
 /// =========================================
@@ -349,12 +352,8 @@ void DirectXCommon::CreateFence() {
 ///  ビューポートの初期化
 /// =========================================
 void DirectXCommon::InitializeViewport() {
-
-  // ビューボート
-  D3D12_VIEWPORT viewport{};
-  // クライアント領域のサイズと一緒にして画面全体に表示
-  viewport.Width = WinApp::kClientWidth;
-  viewport.Height = WinApp::kClientHeight;
+  viewport.Width = (float)WinApp::kClientWidth;
+  viewport.Height = (float)WinApp::kClientHeight;
   viewport.TopLeftX = 0;
   viewport.TopLeftY = 0;
   viewport.MinDepth = 0.0f;
@@ -365,10 +364,6 @@ void DirectXCommon::InitializeViewport() {
 ///  シザリング矩形の生成
 /// =========================================
 void DirectXCommon::InitializeScissorRect() {
-
-  // シザー矩形
-  D3D12_RECT scissorRect{};
-  // 基本的にビューボートと同じ矩形が構成されるようにする
   scissorRect.left = 0;
   scissorRect.right = WinApp::kClientWidth;
   scissorRect.top = 0;
@@ -401,7 +396,6 @@ void DirectXCommon::CreateDXCCompiler() {
 /// =========================================
 
 // スワップチェーン設定
-DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 void DirectXCommon::InitializeImGui() {
   // ImGuiの初期化。詳細はさして重要ではないので解説は省略する。
   // こういうもんである
@@ -491,74 +485,55 @@ void DirectXCommon::PostDraw() {
 
 
 
-Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
-    // CompilerするShaderファイルへのパス
-    const std::wstring &filePath,
-    // Compileに使用するProfile
-    const wchar_t *profile,
-    // 初期化で生成したものを３つ
-    IDxcUtils *dxcUtils, IDxcCompiler3 *dxcCompiler,
-    IDxcIncludeHandler *includeHandler) {
-  // これからシェーダをコンバイルｓる旨をログに出す
-        logger::log(stringutility::convertstring(std::format(l" begin
- compileshader,path:{},profile{}\n", filepath, profile)));
-	//hlslファイルを読む
-	idxcblobencoding* shadersource = nullptr;
-	hresult hr = dxcutils->loadfile(filepath.c_str(), nullptr,
-&shadersource);
-	//読めなかったら止める
-	assert(succeeded(hr));
-	//読み込んだファイルの内容を設定する
-	dxcbuffer shadersourcebuffer;
-	shadersourcebuffer.ptr = shadersource->getbufferpointer();
-	shadersourcebuffer.size = shadersource->getbuffersize();
-	shadersourcebuffer.encoding =
- dxc_cp_utf8;//utf8の文字コードであることを通知 	lpcwstr arguments[] =
-	{
-	filePath.c_str(),//コンパイル対象のhlslファイル名
-	L"-E",L"main",//エントリーポイントの指定。基本的にmain以外にはしない
-	L"-T",profile,//shaderProfileの設定
-	L"-Zi",L"-Qembed_debug",//デバッグ用の情報を埋め込む
-	L"Od",//最適化を外しておく
-	L"-Zpr",//メモリレイアウトは行優先
-	};
+Microsoft::WRL::ComPtr<IDxcBlob>
+CompileShader(const std::wstring &filePath, const wchar_t *profile,
+              IDxcUtils *dxcUtils, IDxcCompiler3 *dxcCompiler,
+              IDxcIncludeHandler *includeHandler) {
+  Logger::Log(StringUtility::ConvertString(std::format(
+      L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 
-	//実際にShaderをコンパイルする
-	IDxcResult* shaderResult = nullptr;
-	hr = dxcCompiler->Compile
-	(
-		&shaderSourceBuffer,//読み込んだファイル
-		arguments,//コンパイルオプション
-		_countof(arguments),//コンパイルオプションの数
-		includeHandler,//includeが含まれた諸々
-		IID_PPV_ARGS(&shaderResult)//コンパイル結果
-	);
-	//コンパイルエラーではなく<dxcが起動できないなど致命的な状況
-	assert(SUCCEEDED(hr));
-	//警告・エラーが出てきたログに出して止める
-	IDxcBlobUtf8* shaderError = nullptr;
-	shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError),
- nullptr); 	if (shaderError != nullptr && shaderError->GetStringLength() !=
- 0)
-	{
+  // HLSL読み込み
+  IDxcBlobEncoding *shaderSource = nullptr;
+  HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+  assert(SUCCEEDED(hr));
+
+  // バッファ設定
+  DxcBuffer shaderSourceBuffer{};
+  shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
+  shaderSourceBuffer.Size = shaderSource->GetBufferSize();
+  shaderSourceBuffer.Encoding = DXC_CP_UTF8;
+
+  LPCWSTR arguments[] = {
+      filePath.c_str(), L"-E",  L"main", L"-T", profile, L"-Zi",
+      L"-Qembed_debug", L"-Od", L"-Zpr",
+  };
+
+  IDxcResult *shaderResult = nullptr;
+  hr = dxcCompiler->Compile(&shaderSourceBuffer, arguments, _countof(arguments),
+                            includeHandler, IID_PPV_ARGS(&shaderResult));
+  assert(SUCCEEDED(hr));
+
+  // エラー確認
+  IDxcBlobUtf8 *shaderError = nullptr;
+  shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
+  if (shaderError && shaderError->GetStringLength() != 0) {
     Logger::Log(shaderError->GetStringPointer());
-    // 警告・エラーがダメ絶対
     assert(false);
-	}
+  }
 
-	//コンパイル結果から実行用のバイナリ部分を所得
+  // バイナリ取得
+  Microsoft::WRL::ComPtr<IDxcBlob> shaderBlob;
+  hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob),
+                               nullptr);
+  assert(SUCCEEDED(hr));
 
-	IDxcBlob* shaderBlob = nullptr;
-	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob),
- nullptr); 	assert(SUCCEEDED(hr));
-	//成功したログを出す
-	Logger::Log(StringUtility::ConvertString(std::format(L"Compile
- Succeeded,path:{}, profile:{}\n", filePath, profile)));
-	//もう使わないリソースを解放
-	shaderSource->Release();
-	shaderResult->Release();
-	//実行用のバイナリを返却
-	return shaderBlob;
+  Logger::Log(StringUtility::ConvertString(std::format(
+      L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile)));
+
+  shaderSource->Release();
+  shaderResult->Release();
+
+  return shaderBlob;
 }
 
  Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t
@@ -590,7 +565,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
  }
 
   // ２DirectX12のTextureResourceを作る
- Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResourcee(ID3D12Device* device, const
+ Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const
  DirectX::TexMetadata& metadata)
 {
 	//１.metadataを基にResorceの設定
@@ -623,6 +598,92 @@ Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
 	assert(SUCCEEDED(hr));
 	return resource;
  }
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Microsoft::WRL::ComPtr<IDxcBlob>
+ DirectXCommon::CompileShader(const std::wstring &filePath,
+                              const wchar_t *profile) {
+
+
+
+
+
+
+     ///////////////////////////////////  コンパイルシェーダーが空
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   return Microsoft::WRL::ComPtr<IDxcBlob>();
+ }
+
+ Microsoft::WRL::ComPtr<ID3D12Resource>
+ DirectXCommon::CreateBufferResource(size_t sizeInBytes) {
+
+
+
+
+   return Microsoft::WRL::ComPtr<ID3D12Resource>();
+ }
+
+ Microsoft::WRL::ComPtr<ID3D12Resource>
+ DirectXCommon::CreateTextureResource(const DirectX::TexMetadata &metadata) {
+
+
+
+
+   return Microsoft::WRL::ComPtr<ID3D12Resource>();
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  // ３TextureResourceにデータを転送する
  void DirectXCommon::UploadTextureData(

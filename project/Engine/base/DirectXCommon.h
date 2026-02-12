@@ -2,10 +2,10 @@
 #include "Logger.h"
 #include "StringUtility.h"
 #include "WinApp.h"
+#include "externals/DirectXTex/DirectXTex.h"
 #include "externals/imgui/imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
-#include "externals/DirectXTex/DirectXTex.h"
 #include <Windows.h>
 #include <array>
 #include <cassert>
@@ -78,30 +78,31 @@ public:
   // DirectX12デバイス
   Microsoft::WRL::ComPtr<ID3D12Device> device;
 
-private: // メンバ変数
-// getter
   ID3D12Device *GetDevice() const { return device.Get(); }
   ID3D12GraphicsCommandList *GetCommandList() const {
     return commandList.Get();
   }
 
-// シェーダーのコンパイル
-  Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
-      const std::wstring &filePath,
-      const wchar_t*profile
-      );
+  // シェーダーのコンパイル
+  Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring &filePath,
+                                                 const wchar_t *profile);
 
   // バッファリソースの生成
-  Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+  Microsoft::WRL::ComPtr<ID3D12Resource>
+  CreateBufferResource(size_t sizeInBytes);
+
+private: // メンバ変数
+         // getter
+
+  
 
   // テクスチャソースの生成
-  Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata &metadata);
+  Microsoft::WRL::ComPtr<ID3D12Resource>
+  CreateTextureResource(const DirectX::TexMetadata &metadata);
 
   // テクスチャデータの転送
   void UploadTextureData(const Microsoft::WRL::ComPtr<ID3D12Resource> &texture,
                          const DirectX::ScratchImage &mipImages);
-
-
 
   // 各種デスクリプタヒープ
   Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>
@@ -127,11 +128,9 @@ private: // メンバ変数
   UINT descriptorSizeSRV = 0;
 
   // 深度ステンシルビュー
-
   Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap;
 
   // フェンス
-
   Microsoft::WRL::ComPtr<ID3D12Fence> fence;
   HANDLE fenceEvent = nullptr;
 
@@ -140,7 +139,6 @@ private: // メンバ変数
   D3D12_VIEWPORT viewport{};
 
   // シザリング矩形
-
   D3D12_RECT scissorRect{};
 
   // DXGIファクトリ
