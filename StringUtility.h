@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 
 namespace StringUtility {
-// string‚ğwstring‚É•ÏŠ·‚·‚é
+// stringã‚’wstringã«å¤‰æ›ã™ã‚‹
 std::wstring ConvertString(const std::string &str);
 
-// wstring‚ğstring‚É•ÏŠ·‚·‚é
+// wstringã‚’stringã«å¤‰æ›ã™ã‚‹
 std::string ConvertString(const std::wstring &str);
 
 } // namespace StringUtility
