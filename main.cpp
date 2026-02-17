@@ -18,6 +18,9 @@
 #define DERECTINPUT_VERSION 0x0800
 #include "DirectXCommon.h"
 #include "StringUtility.h"
+#include "Sprite.h"
+#include "SpriteCommon.h"
+
 #include <dinput.h>
 
 #pragma comment(lib, "dinput8.lib")
@@ -598,6 +601,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
   // Log(ConvertString(std::format(L"WSTRING{}\n", L"abc")));
 
+  #pragma region 基盤システムの初期化
+
+
+  SpriteCommon *spriteCommon = nullptr;
+  // スプライト共通部の初期化
+  spriteCommon = new SpriteCommon;
+  spriteCommon->Initialize();
+
+  #pragma endregion 基盤システムの初期化
+
+   #pragma region 最初のシーンの初期化
+
+  Sprite *sprite = new Sprite();
+  sprite->Initialize();
+
+   #pragma endregion 最初のシーンの初期化
+
   // RootSignature作成
   D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
   descriptionRootSignature.Flags =
@@ -1093,6 +1113,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   delete input;
 
   delete dxCommon;
+
+  delete spriteCommon;
+
+  delete sprite;
 
   // WindowsAPIの終了処理
   winApp->Finalize();
