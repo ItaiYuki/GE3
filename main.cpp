@@ -607,7 +607,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   SpriteCommon *spriteCommon = nullptr;
   // スプライト共通部の初期化
   spriteCommon = new SpriteCommon;
-  spriteCommon->Initialize();
+  spriteCommon->Initialize(dxCommon);
 
   #pragma endregion 基盤システムの初期化
 
@@ -1013,6 +1013,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     // 更新処理をかく
     //  描画前処理
     dxCommon->PreDraw();
+
+    // Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
+    spriteCommon->SetupCommonDrawing();
 
     // RootSignatureを設定。PSOに設定しているけど別途設定が必要
     dxCommon->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
