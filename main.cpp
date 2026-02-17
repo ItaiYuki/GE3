@@ -698,11 +698,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
   // shaderをコンバイルする
   Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob =
-      dxCommon->CompileShader(L"Object3d.VS.hlsl", L"vs_6_0");
+      dxCommon->CompileShader(L"resources/shaders/Object3d.VS.hlsl", L"vs_6_0");
   assert(vertexShaderBlob != nullptr);
 
   Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob =
-      dxCommon->CompileShader(L"Object3d.PS.hlsl", L"ps_6_0");
+      dxCommon->CompileShader(L"resources/shaders/Object3d.PS.hlsl", L"ps_6_0");
   assert(pixelShaderBlob != nullptr);
 
   // PSOを生成する//P38
