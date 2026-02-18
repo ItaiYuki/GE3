@@ -77,6 +77,9 @@ public:
 
   static DirectX::ScratchImage LoadTexture(const std::string &filePath);
 
+   // 最大SRV数(最大テクスチャ枚数)
+  static const uint32_t kMaxSRVCount;
+
 private:
   // DirectX12デバイス
   Microsoft::WRL::ComPtr<ID3D12Device> device;
@@ -114,6 +117,8 @@ private:
   static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(
       const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> &descriptorHeap,
       uint32_t descriptorSize, uint32_t index);
+
+ 
 
   uint32_t descriptorSizeSRV;
   uint32_t descriptorSizeRTV;
