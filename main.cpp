@@ -614,7 +614,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
    #pragma region 最初のシーンの初期化
 
   Sprite *sprite = new Sprite();
-  sprite->Initialize();
+  sprite->Initialize(spriteCommon);
 
    #pragma endregion 最初のシーンの初期化
 
@@ -1127,9 +1127,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   // WindowsAPI解放
   delete winApp;
   winApp = nullptr;
-
-  /*CloseWindow(hwnd);*/
-  /*CoUninitialize();*/
 
   return 0;
 }
