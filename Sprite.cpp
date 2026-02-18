@@ -97,6 +97,31 @@ void Sprite::Initialize(SpriteCommon *spriteCommon) {
 }
 
 void Sprite::Update() {
+
+  // 座標
+  transform.translate = {position.x, position.y, 0.0f};
+  // 回転
+  transform.rotate = {0.0f, 0.0f, rotation};
+  // サイズ
+  //  頂点リソースにデータを書き込む
+  // 左下
+  vertexData[0].position = {0.0f, 1.0f, 0.0f, 1.0f};
+  vertexData[0].texcoord = {0.0f, 1.0f};
+
+  // 左上
+  vertexData[1].position = {0.0f, 0.0f, 0.0f, 1.0f};
+  vertexData[1].texcoord = {0.0f, 0.0f};
+
+  // 右下
+  vertexData[2].position = {1.0f, 1.0f, 0.0f, 1.0f};
+  vertexData[2].texcoord = {1.0f, 1.0f};
+
+  // 右上
+  vertexData[3].position = {1.0f, 0.0f, 0.0f, 1.0f};
+  vertexData[3].texcoord = {1.0f, 0.0f};
+
+  transform.scale = {size.x, size.y, 1.0f};
+
   // Sprite用のWorldViewProjectionMatrixを作る
   Matrix4x4 worldMatrix =
       MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
@@ -129,7 +154,9 @@ void Sprite::Draw() {
   spriteCommon_->GetDxCommon()
       ->GetCommandList()
       ->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
-  
+  // 描画！（DrawInstanced(DrawCall/ドローコル）
+  // spriteCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(6, 1, 0, 0);
+  ////描画!(DrawCall/ドローコル）６個のインデックスを使用し１つのインスタンスを描画。その他は当面０で良い
   spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0,
                                                                        0, 0);
 }

@@ -43,20 +43,6 @@ public: // メンバ関数
     Vector3 translate;
   };
 
-  struct VertexData {
-    Vector4 position;
-    Vector2 texcoord;
-  };
-
-  struct Material {
-    Vector4 color;
-  };
-
-  struct TransformationMatrix {
-    Matrix4x4 WVP;
-    Matrix4x4 World;
-  };
-
   // 単位行列
   Matrix4x4 MakeIdentity4x4() {
     Matrix4x4 identity;
@@ -190,12 +176,42 @@ public: // メンバ関数
     return result;
   }
 
-  
+  struct VertexData {
+    Vector4 position;
+    Vector2 texcoord;
+  };
+
+  struct Material {
+    Vector4 color;
+    /*  int32_t enableLighting;
+      float padding[3];
+      Matrix4x4 uvTransform;
+      float shininess;*/
+  };
+
+  struct TransformationMatrix {
+    Matrix4x4 WVP;
+    Matrix4x4 World;
+  };
+
+  // getter//
+  const Vector2 &GetPosition() const { return position; }
+  float GetRotation() const { return rotation; }
+  const Vector4 GetColor() const { return materialData->color; }
+  const Vector2 &GetSize() const { return size; }
+
+  // setter//
+  void SetPosition(const Vector2 &position) { this->position = position; }
+  void SetRotation(float rotation) { this->rotation = rotation; }
+  void SetColor(const Vector4 &color) { materialData->color = color; }
+  void SetSize(const Vector2 &size) { this->size = size; }
 
 private:
   SpriteCommon *spriteCommon_ = nullptr;
 
   Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
+
+  // 頂点インデックス
   Microsoft::WRL::ComPtr<ID3D12Resource> indexResource;
 
   // バッファリソース内のデータを指すポインタ
@@ -220,4 +236,13 @@ private:
   D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU{};
 
   Microsoft::WRL::ComPtr<ID3D12Resource> textureResource;
+
+  // 座標
+  Vector2 position = {0.0f, 0.0f};
+
+  // 回転
+  float rotation = 0.0f;
+
+  // サイズ
+  Vector2 size = {640.0f, 360.0f};
 };

@@ -618,6 +618,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
    #pragma endregion 最初のシーンの初期化
 
+  std::vector<Sprite *> sprites;
+  for (uint32_t i = 0; i < 5; ++i) {
+    Sprite *sprite = new Sprite();
+    sprite->Initialize(spriteCommon);
+    // ← ここ追加
+    Sprite::Vector2 pos;
+    pos.x = 0.0f + i * 250.0f; // 横にずらす
+    pos.y = 0.0f;              // 縦は固定
+    sprite->SetPosition(pos);
+
+    sprite->SetSize({156.0f, 156.0f});
+
+    sprites.push_back(sprite);
+  }
+
+
+
+
+
   // RootSignature作成
   D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
   descriptionRootSignature.Flags =
@@ -674,105 +693,104 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   hr = D3D12SerializeRootSignature(&descriptionRootSignature,
                                    D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob,
                                    &errorBlob);
-  if (FAILED(hr)) {
-    Log(reinterpret_cast<char *>(errorBlob->GetBufferPointer()));
-    assert(false);
-  }
+  //if (FAILED(hr)) {
+  //  Log(reinterpret_cast<char *>(errorBlob->GetBufferPointer()));
+  //  assert(false);
+  //}
 
-  ////バイナリを元に生成
-  Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
-  hr = dxCommon->GetDevice()->CreateRootSignature(
-      0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(),
-      IID_PPV_ARGS(&rootSignature));
-  assert(SUCCEEDED(hr));
+  //////バイナリを元に生成
+  //Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
+  //hr = dxCommon->GetDevice()->CreateRootSignature(
+  //    0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(),
+  //    IID_PPV_ARGS(&rootSignature));
+  //assert(SUCCEEDED(hr));
 
-  // InputLayout
-  D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
-  inputElementDescs[0].SemanticName = "POSITION";
-  inputElementDescs[0].SemanticIndex = 0;
-  inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-  inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-  inputElementDescs[1].SemanticName = "TEXCOORD";
-  inputElementDescs[1].SemanticIndex = 0;
-  inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-  inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+  //// InputLayout
+  //D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
+  //inputElementDescs[0].SemanticName = "POSITION";
+  //inputElementDescs[0].SemanticIndex = 0;
+  //inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+  //inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+  //inputElementDescs[1].SemanticName = "TEXCOORD";
+  //inputElementDescs[1].SemanticIndex = 0;
+  //inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+  //inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-  D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
-  inputLayoutDesc.pInputElementDescs = inputElementDescs;
-  inputLayoutDesc.NumElements = _countof(inputElementDescs);
+  //D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+  //inputLayoutDesc.pInputElementDescs = inputElementDescs;
+  //inputLayoutDesc.NumElements = _countof(inputElementDescs);
 
-  // BlendStateの設定
-  D3D12_BLEND_DESC blendDesc{};
-  // すべての色要素を書き込む
-  blendDesc.RenderTarget[0].RenderTargetWriteMask =
-      D3D12_COLOR_WRITE_ENABLE_ALL;
+  //// BlendStateの設定
+  //D3D12_BLEND_DESC blendDesc{};
+  //// すべての色要素を書き込む
+  //blendDesc.RenderTarget[0].RenderTargetWriteMask =
+  //    D3D12_COLOR_WRITE_ENABLE_ALL;
 
-  // RasiterZerStateの設定
-  D3D12_RASTERIZER_DESC rasterizeDesc{};
-  // 裏面（時計周り）を表示しない
-  rasterizeDesc.CullMode = D3D12_CULL_MODE_BACK;
-  // 三角形の中を塗りつぶす
-  rasterizeDesc.FillMode = D3D12_FILL_MODE_SOLID;
-  // 裏面表示
-  // rasterizeDesc.CullMode = D3D12_CULL_MODE_NONE;
+  //// RasiterZerStateの設定
+  //D3D12_RASTERIZER_DESC rasterizeDesc{};
+  //// 裏面（時計周り）を表示しない
+  //rasterizeDesc.CullMode = D3D12_CULL_MODE_BACK;
+  //// 三角形の中を塗りつぶす
+  //rasterizeDesc.FillMode = D3D12_FILL_MODE_SOLID;
+  //// 裏面表示
+  //// rasterizeDesc.CullMode = D3D12_CULL_MODE_NONE;
 
-  // shaderをコンバイルする
-  Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob =
-      dxCommon->CompileShader(L"resources/shaders/Object3d.VS.hlsl", L"vs_6_0");
-  assert(vertexShaderBlob != nullptr);
+  //// shaderをコンバイルする
+  //Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob =
+  //    dxCommon->CompileShader(L"resources/shaders/Object3d.VS.hlsl", L"vs_6_0");
+  //assert(vertexShaderBlob != nullptr);
 
-  Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob =
-      dxCommon->CompileShader(L"resources/shaders/Object3d.PS.hlsl", L"ps_6_0");
-  assert(pixelShaderBlob != nullptr);
+  //Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob =
+  //    dxCommon->CompileShader(L"resources/shaders/Object3d.PS.hlsl", L"ps_6_0");
+  //assert(pixelShaderBlob != nullptr);
 
-  // PSOを生成する//P38
-  D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelinStateDesc{};
-  graphicsPipelinStateDesc.pRootSignature =
-      rootSignature.Get();                                // RootSignature
-  graphicsPipelinStateDesc.InputLayout = inputLayoutDesc; // InputLayout
-  graphicsPipelinStateDesc.VS = {
-      vertexShaderBlob->GetBufferPointer(),
-      vertexShaderBlob->GetBufferSize()}; // VertexShader
-  graphicsPipelinStateDesc.PS = {
-      pixelShaderBlob->GetBufferPointer(),
-      pixelShaderBlob->GetBufferSize()};                    // PixelShader
-  graphicsPipelinStateDesc.BlendState = blendDesc;          // BlendState
-  graphicsPipelinStateDesc.RasterizerState = rasterizeDesc; // RaterizerState
-  // 書き込むRTVの情報
-  graphicsPipelinStateDesc.NumRenderTargets = 1;
-  graphicsPipelinStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-  // 利用するトボロジ（形状）のタイプ。三角形
-  graphicsPipelinStateDesc.PrimitiveTopologyType =
-      D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-  // どのように画面に色を打ち込むかの設定（気にしなくて良い）
-  graphicsPipelinStateDesc.SampleDesc.Count = 1;
-  graphicsPipelinStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+  //// PSOを生成する//P38
+  //D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelinStateDesc{};
+  //graphicsPipelinStateDesc.pRootSignature =
+  //    rootSignature.Get();                                // RootSignature
+  //graphicsPipelinStateDesc.InputLayout = inputLayoutDesc; // InputLayout
+  //graphicsPipelinStateDesc.VS = {
+  //    vertexShaderBlob->GetBufferPointer(),
+  //    vertexShaderBlob->GetBufferSize()}; // VertexShader
+  //graphicsPipelinStateDesc.PS = {
+  //    pixelShaderBlob->GetBufferPointer(),
+  //    pixelShaderBlob->GetBufferSize()};                    // PixelShader
+  //graphicsPipelinStateDesc.BlendState = blendDesc;          // BlendState
+  //graphicsPipelinStateDesc.RasterizerState = rasterizeDesc; // RaterizerState
+  //// 書き込むRTVの情報
+  //graphicsPipelinStateDesc.NumRenderTargets = 1;
+  //graphicsPipelinStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+  //// 利用するトボロジ（形状）のタイプ。三角形
+  //graphicsPipelinStateDesc.PrimitiveTopologyType =
+  //    D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+  //// どのように画面に色を打ち込むかの設定（気にしなくて良い）
+  //graphicsPipelinStateDesc.SampleDesc.Count = 1;
+  //graphicsPipelinStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-  // DepthstencilStateの設定
-  D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-  // Depthの機能を有効化する
-  depthStencilDesc.DepthEnable = true;
-  // 書き込みします
-  depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-  // 比較関数はLessEqual。つまり、近ければ描画される
-  depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+  //// DepthstencilStateの設定
+  //D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+  //// Depthの機能を有効化する
+  //depthStencilDesc.DepthEnable = true;
+  //// 書き込みします
+  //depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+  //// 比較関数はLessEqual。つまり、近ければ描画される
+  //depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
-  // DepthStencilの設定
-  graphicsPipelinStateDesc.DepthStencilState = depthStencilDesc;
-  graphicsPipelinStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+  //// DepthStencilの設定
+  //graphicsPipelinStateDesc.DepthStencilState = depthStencilDesc;
+  //graphicsPipelinStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-  ////実際に生成
-  Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
-  hr = dxCommon->GetDevice()->CreateGraphicsPipelineState(
-      &graphicsPipelinStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
-  assert(SUCCEEDED(hr));
+  //////実際に生成
+  //Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
+  //hr = dxCommon->GetDevice()->CreateGraphicsPipelineState(
+  //    &graphicsPipelinStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
+  //assert(SUCCEEDED(hr));
 
   // モデル読み込み
   // ModelData modelData = LoadObjFile("resources", "plane.obj");
   ModelData modelData = LoadObjFile("resources", "plane.obj");
 
   ////三角形２個
-
   Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource =
       dxCommon->CreateBufferResource(sizeof(VertexData) *
                                      modelData.vertices.size());
@@ -977,6 +995,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
       OutputDebugStringA("Press Space\n");
     }
 
+    // 現在の座標を変数で受け取る
+    Sprite::Vector2 position = sprite->GetPosition();
+    // 座標を変更する
+    position.x += 0.1f;
+    position.y += 0.1f;
+
+    sprite->SetPosition(position);
+
+    for (Sprite *sprite : sprites) {
+      sprite->Update();
+    }
+
+
     Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate,
                                              transform.translate);
     Matrix4x4 cameraMatrix =
@@ -1017,26 +1048,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     // Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
     spriteCommon->SetupCommonDrawing();
 
-    // RootSignatureを設定。PSOに設定しているけど別途設定が必要
-    dxCommon->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
-    dxCommon->GetCommandList()->SetPipelineState(
-        graphicsPipelineState.Get()); // PSOを設定
-    dxCommon->GetCommandList()->IASetVertexBuffers(
-        0, 1, &vertexBufferView); // VBVを設定
-    // 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいいい
-    dxCommon->GetCommandList()->IASetPrimitiveTopology(
-        D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    for (Sprite *sprite : sprites) {
+      sprite->Draw();
+    }
 
-    // マテリアルCBufferの場所を設定
-    dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(
-        1, materialResource->GetGPUVirtualAddress());
-    // wvp用のCBufferの場所を設定
-    dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(
-        0, transfomationMatrixResource->GetGPUVirtualAddress());
 
-    // SRVのDescriptorTableの先頭を設定。２はrootParameter[2]である。
-    dxCommon->GetCommandList()->SetGraphicsRootDescriptorTable(
-        2, textureSrvHandleGPU);
+    //// RootSignatureを設定。PSOに設定しているけど別途設定が必要
+    //dxCommon->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+    //dxCommon->GetCommandList()->SetPipelineState(
+    //    graphicsPipelineState.Get()); // PSOを設定
+    //dxCommon->GetCommandList()->IASetVertexBuffers(
+    //    0, 1, &vertexBufferView); // VBVを設定
+    //// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいいい
+    //dxCommon->GetCommandList()->IASetPrimitiveTopology(
+    //    D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    //// マテリアルCBufferの場所を設定
+    //dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(
+    //    1, materialResource->GetGPUVirtualAddress());
+    //// wvp用のCBufferの場所を設定
+    //dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(
+    //    0, transfomationMatrixResource->GetGPUVirtualAddress());
+
+    //// SRVのDescriptorTableの先頭を設定。２はrootParameter[2]である。
+    //dxCommon->GetCommandList()->SetGraphicsRootDescriptorTable(
+    //    2, textureSrvHandleGPU);
 
     // インデックスを指定
     // dxCommon->GetCommandList()->IASetIndexBuffer(&indexBufferViewSprite);//IBNを設定
