@@ -1,4 +1,9 @@
-#pragma once
+ï»¿#pragma once
+#include <cmath>
+#include <string>
+#include <vector>
+
+namespace math {
 
 struct Vector2 {
   float x;
@@ -22,53 +27,39 @@ struct Matrix4x4 {
   float m[4][4];
 };
 
-struct Matrix3x3 {
-  float m[3][3];
+struct Transform {
+  Vector3 scale;
+  Vector3 rotate;
+  Vector3 translate;
 };
 
 class Math {
 public:
-  // •½sˆÚ“®
-  Matrix4x4 MakeTranslateMatrix(const Vector3 &translate);
+  // å˜ä½è¡Œåˆ—
+  static Matrix4x4 MakeIdentity4x4();
 
-  // Šg‘åk¬
-  Matrix4x4 MkeScaleMatrix(const Vector3 &scale);
+  // è¡Œåˆ—ä¹—ç®—
+  static Matrix4x4 Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2);
 
-  // X²‰ñ“]s—ñ
-  Matrix4x4 MakeRoteXMatrix(float radian);
+  // å›è»¢
+  static Matrix4x4 MakeRotateXMatrix(float radian);
+  static Matrix4x4 MakeRotateYMatrix(float radian);
+  static Matrix4x4 MakeRotateZMatrix(float radian);
 
-  // Y²‰ñ“]s—ñ
-  Matrix4x4 MakeRotateYMatrix(float radian);
+  // ã‚¢ãƒ•ã‚£ãƒ³å¤‰æ›
+  static Matrix4x4 MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate,
+                                    const Vector3 &translate);
 
-  // Z²‰ñ“]s—ñ
-  Matrix4x4 MakeRotateZMatrix(float radian);
+  // å°„å½±å¤‰æ›
+  static Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio,
+                                            float nearClip, float farClip);
 
-  // Ï
-  Matrix4x4 Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2);
+  static Matrix4x4 MakeOrthographicMatrix(float left, float top, float right,
+                                          float bottom, float nearClip,
+                                          float farClip);
 
-  // ƒAƒtƒBƒ“•ÏŠ·s—ñ
-  Matrix4x4 MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate,
-                             const Vector3 &translate);
-
-  // À•W•ÏŠ·
-  Vector3 Transform(const Vector3 &vector, const Matrix4x4 &matrix);
-
-  // ‰“‹ß“Š‰es—ñ
-  Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearZ,
-                                     float farZ);
-
-  // ³‹K‰»ƒfƒoƒCƒXÀ•W
-  Matrix4x4 MakeViewportMatrix(float width, float height);
-
-  // ’PˆÊs—ñ
-  Matrix4x4 MakeIdentity4x4();
-
-  // ‹ts—ñ
-  Matrix4x4 Inverse(const Matrix4x4 &m);
-
-  // •½s“Š‰es—ñ
-  Matrix4x4 MakeOrthographicMatrix(float left, float top, float right,
-                                   float bottom, float nearClip, float farClip);
-
-  Vector3 Normalize(const Vector3 &v);
+  // é€†è¡Œåˆ—
+  static Matrix4x4 Inverse(const Matrix4x4 &m);
 };
+
+} 

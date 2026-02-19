@@ -2,8 +2,12 @@
 #include "DirectXCommon.h"
 #include "SpriteCommon.h"
 #include "WinApp.h"
+#include "TextureManager.h"
 
-void Sprite::Initialize(SpriteCommon *spriteCommon) {
+using namespace math;
+
+void Sprite::Initialize(SpriteCommon *spriteCommon,
+                        std::string textureFilePath) {
   // 引数で受け取ってメンバ変数に記録する
   this->spriteCommon_ = spriteCommon;
 
@@ -66,34 +70,15 @@ void Sprite::Initialize(SpriteCommon *spriteCommon) {
   transformationMatrixResource->Map(
       0, nullptr, reinterpret_cast<void **>(&transformationMatrixData));
   // 単位行列を書きこんでおく
-  transformationMatrixData->WVP = MakeIdentity4x4();
-  transformationMatrixData->World = MakeIdentity4x4();
-
-  // Textueを読んで転送する
-  DirectX::ScratchImage mipImages =
-      spriteCommon_->GetDxCommon()->LoadTexture("resources/uvChecker.png");
-  const DirectX::TexMetadata &metadata = mipImages.GetMetadata();
-  textureResource =
-      spriteCommon_->GetDxCommon()->CreateTextureResource(metadata);
-  spriteCommon_->GetDxCommon()->UploadTextureData(textureResource, mipImages);
-
-  // metaDataを基にSRVの設定
-  D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-  srvDesc.Format = metadata.format;
-  srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-  srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // ２Dテクスチャ
-  srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
-  // SRVを作成するDescriptorHeapの場所を決める
-  textureSrvHandleCPU =
-      spriteCommon->GetDxCommon()->GetSRVCPUDescriptorHandle(1);
-  textureSrvHandleGPU =
-      spriteCommon->GetDxCommon()->GetSRVGPUDescriptorHandle(1);
-  // SRVの生成
-  spriteCommon_->GetDxCommon()->GetDevice()->CreateShaderResourceView(
-      textureResource.Get(), &srvDesc, textureSrvHandleCPU);
+  transformationMatrixData->WVP = math::Math::MakeIdentity4x4();
+  transformationMatrixData->World = math::Math::MakeIdentity4x4();
 
   transform = {};
   transform.scale = {1.0f, 1.0f, 1.0f};
+
+  // テクスチャ番号を取得して記録
+  textureIndex =
+      TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
 }
 
 void Sprite::Update() {
@@ -123,16 +108,16 @@ void Sprite::Update() {
   transform.scale = {size.x, size.y, 1.0f};
 
   // Sprite用のWorldViewProjectionMatrixを作る
-  Matrix4x4 worldMatrix =
-      MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-  Matrix4x4 viewMatrix = MakeIdentity4x4();
-  Matrix4x4 projectionMatrix =
-      MakeOrthographicMatrix(0.0f, 0.0f, float(WinApp::kClientWidth),
-                             float(WinApp::kClientHeight), 0.0f, 100.0f);
+  math::Matrix4x4 worldMatrix = math::Math::MakeAffineMatrix(
+      transform.scale, transform.rotate, transform.translate);
+  Matrix4x4 viewMatrix = math::Math::MakeIdentity4x4();
+  Matrix4x4 projectionMatrix = math::Math::MakeOrthographicMatrix(
+      0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight),
+      0.0f, 100.0f);
   // Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite,
   // Multiply(viewMatrixSprite, projectionMatrixSprite));
-  transformationMatrixData->WVP =
-      Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+  transformationMatrixData->WVP = math::Math::Multiply(
+      worldMatrix, math::Math::Multiply(viewMatrix, projectionMatrix));
   transformationMatrixData->World = worldMatrix;
 }
 
@@ -153,7 +138,7 @@ void Sprite::Draw() {
           1, materialResource->GetGPUVirtualAddress());
   spriteCommon_->GetDxCommon()
       ->GetCommandList()
-      ->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
+      ->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex));
   // 描画！（DrawInstanced(DrawCall/ドローコル）
   // spriteCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(6, 1, 0, 0);
   ////描画!(DrawCall/ドローコル）６個のインデックスを使用し１つのインスタンスを描画。その他は当面０で良い
