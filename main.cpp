@@ -20,6 +20,7 @@
 #include "StringUtility.h"
 #include "Sprite.h"
 #include "SpriteCommon.h"
+#include "TextureManager.h"
 
 #include <dinput.h>
 
@@ -658,9 +659,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
   // テクスチャマネージャーの初期化
-  TextureManager::Get
+  TextureManager::GetInstance()->Initialize();
 
-
+  
 
   // RootSignature作成
   D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
@@ -1172,6 +1173,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
   /*wvpResource->Release();
   materialResource->Release();*/
+
+  // テクスチャマネージャーの終了
+  TextureManager::GetInstance()->Finalize();
 
   // 入力解放
   delete input;

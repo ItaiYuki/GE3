@@ -20,6 +20,9 @@ public:
   // テクスチャファイルの読み込み
   void LoadTexture(const std::string &filePath);
 
+ 
+  
+
 private:
   static TextureManager *instance;
   TextureManager() = default;
@@ -38,4 +41,6 @@ private:
 
   // テクスチャデータ
   std::vector<TextureData> textureDatas;
+  
+  
 };

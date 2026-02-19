@@ -31,6 +31,17 @@ void TextureManager::LoadTexture(const std::string &filePath) {
       filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_RGB, nullptr, image);
   assert(SUCCEEDED(hr));
 
+  
+
+  // テクスチャデータを追加
+  textureDatas.resize(textureDatas.size() + 1);
+  // 追加したテクスチャデータの参照を取得する
+  TextureData &textureData = textureDatas.back();
+
+  textureData.filePath = filePath;
+  textureData.metadata = image.GetMetadata();
+  textureData.resource = DirectXCommon::GetInstance()->CreateTextureResource(textureData.metadata);
+
   // ミップマップの作成
   DirectX::ScratchImage mipImages{};
   hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(),
@@ -38,6 +49,6 @@ void TextureManager::LoadTexture(const std::string &filePath) {
                                 4, mipImages);
   assert(SUCCEEDED(hr));
 
-  // ミップマップ付きのデータを返す
-  //return mipImages;
+  
+  
 }
