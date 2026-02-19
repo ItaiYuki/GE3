@@ -10,8 +10,7 @@ class SpriteCommon;
 class Sprite {
 public: // メンバ関数
   // 初期化
-  void Initialize(SpriteCommon *spriteCommon, std::string textureFilePath
-  );
+  void Initialize(SpriteCommon *spriteCommon, std::string textureFilePath);
 
   // 更新
   void Update();
@@ -44,15 +43,33 @@ public: // メンバ関数
   float GetRotation() const { return rotation; }
   const math::Vector4 GetColor() const { return materialData->color; }
   const math::Vector2 &GetSize() const { return size; }
+  const math::Vector2 &GetAnchorPoint() const { return anchorPoint; }
+  const bool IsFlipX() const { return isFlipX_; }
+  const bool IsFlipY() const { return isFlipY_; }
+
 
   // setter//
   void SetPosition(const math::Vector2 &position) { this->position = position; }
   void SetRotation(float rotation) { this->rotation = rotation; }
   void SetColor(const math::Vector4 &color) { materialData->color = color; }
   void SetSize(const math::Vector2 &size) { this->size = size; }
+  void SetAnchorPoint(const math::Vector2 &anchorPoint) {
+    this->anchorPoint = anchorPoint;}
+  void SetFlipX(bool isFlipX_) { this->isFlipX_ = isFlipX_; }
+  void SetFlipY(bool isFlipY_) { this->isFlipY_ = isFlipY_; }
+
 
 private:
   SpriteCommon *spriteCommon_ = nullptr;
+
+  math::Vector2 anchorPoint = {0.0f, 0.0f};
+
+  // 左右フリップ
+  bool isFlipX_ = false;
+  // 上下フリップ
+  bool isFlipY_ = false;
+
+
 
   // テクスチャ番号
   uint32_t textureIndex = 0;

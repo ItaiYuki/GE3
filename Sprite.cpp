@@ -1,8 +1,8 @@
 ﻿#include "Sprite.h"
 #include "DirectXCommon.h"
 #include "SpriteCommon.h"
-#include "WinApp.h"
 #include "TextureManager.h"
+#include "WinApp.h"
 
 using namespace math;
 
@@ -83,6 +83,25 @@ void Sprite::Initialize(SpriteCommon *spriteCommon,
 
 void Sprite::Update() {
 
+  float left = 0.0f - anchorPoint.x;
+  float right = 1.0f - anchorPoint.x;
+  float top = 0.0f - anchorPoint.y;
+  float bottom = 1.0f - anchorPoint.y;
+
+  // 左右反転
+  if (isFlipX_) {
+    left = -left;
+    right = -right;
+  }
+
+  // 上下反転
+  if (isFlipY_) {
+    top = -top;
+    bottom = -bottom;
+  }
+
+
+
   // 座標
   transform.translate = {position.x, position.y, 0.0f};
   // 回転
@@ -90,19 +109,19 @@ void Sprite::Update() {
   // サイズ
   //  頂点リソースにデータを書き込む
   // 左下
-  vertexData[0].position = {0.0f, 1.0f, 0.0f, 1.0f};
+  vertexData[0].position = {left, bottom, 0.0f, 1.0f};
   vertexData[0].texcoord = {0.0f, 1.0f};
 
   // 左上
-  vertexData[1].position = {0.0f, 0.0f, 0.0f, 1.0f};
+  vertexData[1].position = {left, top, 0.0f, 1.0f};
   vertexData[1].texcoord = {0.0f, 0.0f};
 
   // 右下
-  vertexData[2].position = {1.0f, 1.0f, 0.0f, 1.0f};
+  vertexData[2].position = {right, bottom, 0.0f, 1.0f};
   vertexData[2].texcoord = {1.0f, 1.0f};
 
   // 右上
-  vertexData[3].position = {1.0f, 0.0f, 0.0f, 1.0f};
+  vertexData[3].position = {right, top, 0.0f, 1.0f};
   vertexData[3].texcoord = {1.0f, 0.0f};
 
   transform.scale = {size.x, size.y, 1.0f};
@@ -138,7 +157,8 @@ void Sprite::Draw() {
           1, materialResource->GetGPUVirtualAddress());
   spriteCommon_->GetDxCommon()
       ->GetCommandList()
-      ->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex));
+      ->SetGraphicsRootDescriptorTable(
+          2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex));
   // 描画！（DrawInstanced(DrawCall/ドローコル）
   // spriteCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(6, 1, 0, 0);
   ////描画!(DrawCall/ドローコル）６個のインデックスを使用し１つのインスタンスを描画。その他は当面０で良い
