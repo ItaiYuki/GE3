@@ -23,6 +23,7 @@
 #include "TextureManager.h"
 #include "math.h"
 
+#include "D3DResourceLeakChecker.h"
 #include <dinput.h>
 
 #pragma comment(lib, "dinput8.lib")
@@ -259,18 +260,6 @@ void Log(const std::string &message) { OutputDebugStringA(message.c_str()); }
 //	return result;
 // }
 
-struct D3DResourceLeakChecker {
-  ~D3DResourceLeakChecker() {
-    // リソースリークチェック
-    Microsoft::WRL::ComPtr<IDXGIDebug1> debug;
-    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
-      debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-      debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
-      debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
-    }
-  }
-};
-
 // ウィンメイン
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -302,11 +291,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   // Log(ConvertString(std::format(L"WSTRING{}\n", L"abc")));
 
   // テクスチャマネージャーの初期化
-  TextureManager::GetInstance()->Initialize( dxCommon);
+  TextureManager::GetInstance()->Initialize(dxCommon);
 
   TextureManager::GetInstance()->LoadTexture("resources/uvChecker.png");
   TextureManager::GetInstance()->LoadTexture("resources/monsterball.png");
-
 
 #pragma region 基盤システムの初期化
 
@@ -568,7 +556,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   // Textueを読んで転送する
   // DirectX::ScratchImage mipImages = LoadTexture("resources/uvChecker.png");
 
-
   /*TextureManager::GetInstance()->LoadTexture("resources/uvChecker.png");
   TextureManager::GetInstance()->LoadTexture("resources/monsterball.png");*/
 
@@ -763,9 +750,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     // commandList->DrawInstanced(6, 1, 0, 0);
 
     // モデル描画
-    dxCommon->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()),
-                                              1, 0, 0);
-
+    /*dxCommon->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()),
+                                              1, 0, 0, 0);*/
+    dxCommon->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
+    dxCommon->GetCommandList()->IASetPrimitiveTopology(
+        D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     //--------------------------------------
 
     // 実際のcommandListのImGuiの描画コマンドを積む
@@ -836,12 +825,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   // 入力解放
   delete input;
 
-  delete dxCommon;
-
+  for (Sprite *sprite : sprites) {
+    if (sprite) {
+      delete sprite;
+    }
+  }
+  delete sprite;
   delete spriteCommon;
 
-  delete sprite;
-
+  TextureManager::GetInstance()->Finalize();
+  delete dxCommon;
   // WindowsAPIの終了処理
   winApp->Finalize();
 

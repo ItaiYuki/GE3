@@ -6,6 +6,8 @@
 #include <d3d12.h>
 #include <wrl.h>
 
+using namespace Microsoft::WRL;
+
 class SpriteCommon;
 class Sprite {
 public: // メンバ関数
@@ -111,6 +113,7 @@ private:
 
   // サイズ
   math::Vector2 size = {640.0f, 360.0f};
+
 
   math::Vector2 anchorPoint = {0.0f, 0.0f};
 

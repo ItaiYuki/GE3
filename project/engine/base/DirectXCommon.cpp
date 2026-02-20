@@ -31,32 +31,32 @@ void DirectXCommon::Initialize(WinApp *winApp) {
   // メンバ変数に記録
   this->winApp = winApp;
 
-  CreateDevice();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDevice();
 
-  CreateCommandQueue();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateCommandQueue();
 
-  CreateSwapChain();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateSwapChain();
 
-  CreateDepthBuffer();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDepthBuffer();
 
-  CreateDescriptorHeapRTVDSV();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDescriptorHeapRTVDSV();
 
-  CreateRenderTargetViews();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateRenderTargetViews();
 
-  CreateDepthStencilView();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDepthStencilView();
 
-  CreateFence();
+ Microsoft::WRL::ComPtr<ID3DBlob> CreateFence();
 
-  InitializeViewport();
+  Microsoft::WRL::ComPtr<ID3DBlob> InitializeViewport();
 
-  InitializeScissorRect();
+ Microsoft::WRL::ComPtr<ID3DBlob> InitializeScissorRect();
 
-  CreateDXCCompiler();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDXCCompiler();
 
-  InitializeImGui();
+  Microsoft::WRL::ComPtr<ID3DBlob> InitializeImGui();
 }
 
-void DirectXCommon::CreateDevice() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDevice() {
 #ifdef _DEBUG
   ComPtr<ID3D12Debug1> debugController = nullptr;
   if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
@@ -144,7 +144,7 @@ true);*/
   /* Logger::Log("Complete create D3D12Device!!!\n");*/
 }
 
-void DirectXCommon::CreateCommandQueue() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateCommandQueue() {
 
   HRESULT hr;
 
@@ -166,7 +166,7 @@ void DirectXCommon::CreateCommandQueue() {
   assert(SUCCEEDED(hr));
 }
 
-void DirectXCommon::CreateSwapChain() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateSwapChain() {
   HRESULT hr;
 
   swapChainDesc.Width = WinApp::kClientWidth;
@@ -183,7 +183,7 @@ void DirectXCommon::CreateSwapChain() {
   assert(SUCCEEDED(hr));
 }
 
-void DirectXCommon::CreateDepthBuffer() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDepthBuffer() {
   // 生成するResourceの設定
   D3D12_RESOURCE_DESC resourceDesc{};
   resourceDesc.Width = winApp->kClientWidth;   // Textureの幅
@@ -217,7 +217,7 @@ void DirectXCommon::CreateDepthBuffer() {
   assert(SUCCEEDED(hr));
 }
 
-void DirectXCommon::CreateDescriptorHeapRTVDSV() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDescriptorHeapRTVDSV() {
   descriptorSizeSRV = device->GetDescriptorHandleIncrementSize(
       D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
@@ -251,7 +251,7 @@ DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType,
   return descriptorHeap;
 }
 
-void DirectXCommon::CreateRenderTargetViews() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateRenderTargetViews() {
   HRESULT hr;
 
   hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
@@ -290,7 +290,7 @@ DirectXCommon::GetSRVGPUDescriptorHandle(uint32_t index) {
   return GetGPUDescriptorHandle(srvDescriptorHeap, descriptorSizeSRV, index);
 }
 
-void DirectXCommon::CreateDepthStencilView() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDepthStencilView() {
 
   // DSVの設定
   D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
@@ -302,7 +302,7 @@ void DirectXCommon::CreateDepthStencilView() {
       dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
-void DirectXCommon::CreateFence() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateFence() {
   HRESULT hr;
 
   hr = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE,
@@ -314,7 +314,7 @@ void DirectXCommon::CreateFence() {
   assert(fenceEvent != nullptr);
 }
 
-void DirectXCommon::InitializeViewport() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeViewport() {
   // ビューボート
 
   // クライアント領域のサイズと一緒にして画面全体に表示
@@ -326,7 +326,7 @@ void DirectXCommon::InitializeViewport() {
   viewport.MaxDepth = 1.0f;
 }
 
-void DirectXCommon::InitializeScissorRect() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeScissorRect() {
 
   // 基本的にビューボートと同じ矩形が構成されるようにする
   scissorRect.left = 0;
@@ -335,7 +335,7 @@ void DirectXCommon::InitializeScissorRect() {
   scissorRect.bottom = WinApp::kClientHeight;
 }
 
-void DirectXCommon::CreateDXCCompiler() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDXCCompiler() {
   HRESULT hr;
 
   hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));
@@ -347,7 +347,7 @@ void DirectXCommon::CreateDXCCompiler() {
   assert(SUCCEEDED(hr));
 }
 
-void DirectXCommon::InitializeImGui() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeImGui() {
   // ImGuiの初期化。詳細はさして重要ではないので解説は省略する。
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -359,7 +359,7 @@ void DirectXCommon::InitializeImGui() {
                       srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 }
 
-void DirectXCommon::PreDraw() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::PreDraw() {
 
   // これから書き込むバックバッファのインデックスを取得
   UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
@@ -406,7 +406,7 @@ void DirectXCommon::PreDraw() {
   commandList->RSSetScissorRects(1, &scissorRect); // Scissorを設定
 }
 
-void DirectXCommon::PostDraw() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::PostDraw() {
   HRESULT hr;
 
   UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
@@ -584,7 +584,7 @@ DirectXCommon::CreateTextureResource(const DirectX::TexMetadata &metadata) {
   return resource;
 }
 
-void DirectXCommon::UploadTextureData(
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::UploadTextureData(
     const Microsoft::WRL::ComPtr<ID3D12Resource> &texture,
     const DirectX::ScratchImage &mipImages) {
   // Meta情報を取得
@@ -643,12 +643,12 @@ D3D12_GPU_DESCRIPTOR_HANDLE DirectXCommon::GetGPUDescriptorHandle(
   return handle;
 }
 
-void DirectXCommon::InitializeFixFPS() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeFixFPS() {
   // 現在時間を記録する
   reference_ = std::chrono::steady_clock::now();
 }
 
-void DirectXCommon::UpdateFixFPS() {
+Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::UpdateFixFPS() {
   // 1/60秒ぴったりの時間
   const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
   // 1/60秒よりわずかに短い時間

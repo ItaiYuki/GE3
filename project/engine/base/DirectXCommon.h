@@ -13,48 +13,57 @@
 
 class WinApp;
 
+using namespace Microsoft::WRL;
+
 class DirectXCommon {
 public:
+  ~DirectXCommon() {
+    // フェンスイベントを閉じる
+    if (fenceEvent) {
+      CloseHandle(fenceEvent);
+    }
+  }
+
   // 初期化処理
-  void Initialize(WinApp *winApp);
+  Microsoft::WRL::ComPtr<ID3DBlob> Initialize(WinApp *winApp);
 
-  void CreateDevice();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDevice();
 
-  void CreateCommandQueue();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateCommandQueue();
 
-  void CreateSwapChain();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateSwapChain();
 
-  void CreateDepthBuffer();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDepthBuffer();
 
-  void CreateDescriptorHeapRTVDSV();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDescriptorHeapRTVDSV();
 
   Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>
   CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors,
                        bool shaderVisible);
 
-  void CreateRenderTargetViews();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateRenderTargetViews();
 
   // SRVの指定指定番号のCPUデスクリプタハンドルを取得する
   D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUDescriptorHandle(uint32_t index);
   // SRVの指定指定番号のGPUデスクリプタハンドルを取得する
   D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUDescriptorHandle(uint32_t index);
 
-  void CreateDepthStencilView();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDepthStencilView();
 
-  void CreateFence();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateFence();
 
-  void InitializeViewport();
+  Microsoft::WRL::ComPtr<ID3DBlob> InitializeViewport();
 
-  void InitializeScissorRect();
+  Microsoft::WRL::ComPtr<ID3DBlob> InitializeScissorRect();
 
-  void CreateDXCCompiler();
+  Microsoft::WRL::ComPtr<ID3DBlob> CreateDXCCompiler();
 
-  void InitializeImGui();
+  Microsoft::WRL::ComPtr<ID3DBlob> InitializeImGui();
 
   // 描画前処理
-  void PreDraw();
+  Microsoft::WRL::ComPtr<ID3DBlob> PreDraw();
   // 描画後処理
-  void PostDraw();
+  Microsoft::WRL::ComPtr<ID3DBlob> PostDraw();
 
   ID3D12Device *GetDevice() const { return device.Get(); }
 
@@ -72,8 +81,9 @@ public:
   Microsoft::WRL::ComPtr<ID3D12Resource>
   CreateTextureResource(const DirectX::TexMetadata &metadata);
 
-  void UploadTextureData(const Microsoft::WRL::ComPtr<ID3D12Resource> &texture,
-                         const DirectX::ScratchImage &mipImages);
+  Microsoft::WRL::ComPtr<ID3DBlob>
+  UploadTextureData(const Microsoft::WRL::ComPtr<ID3D12Resource> &texture,
+                    const DirectX::ScratchImage &mipImages);
 
   static DirectX::ScratchImage LoadTexture(const std::string &filePath);
 
@@ -151,9 +161,9 @@ private:
   D3D12_RESOURCE_BARRIER barrier{};
 
   ////FPS固定初期化
-  void InitializeFixFPS();
+  Microsoft::WRL::ComPtr<ID3DBlob> InitializeFixFPS();
   ////FPS固定更新
-  void UpdateFixFPS();
+  Microsoft::WRL::ComPtr<ID3DBlob> UpdateFixFPS();
 
   ////記録時間（FPS固定用）
   std::chrono::steady_clock::time_point reference_;
