@@ -16,14 +16,62 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{16925c7a-36b1-41a6-ab0f-bbcef653c06b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NewFilter1">
+    <Filter Include="ソース ファイル\scene">
+      <UniqueIdentifier>{fa9def4c-191c-4b66-a311-6e1d06dd45f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\project">
+      <UniqueIdentifier>{11024352-e248-40c5-986c-610b7f60040e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\project\engine">
       <UniqueIdentifier>{4b5f5f3b-3516-418d-8440-4b9777b0e117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\project\engine\2d">
+      <UniqueIdentifier>{f72563a4-59aa-453d-ae82-2103e13e0b97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\project\engine\3d">
+      <UniqueIdentifier>{ff7ab0a9-3747-42db-a94e-00599cef987e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\project\engine\audio">
+      <UniqueIdentifier>{2e54ac42-79eb-4d23-b05f-f98d202e527e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\project\engine\base">
+      <UniqueIdentifier>{b4f81fed-c986-4820-957a-a468fdc2244f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\project\engine\io">
+      <UniqueIdentifier>{8ace1150-91aa-4461-a676-6fd69456fa0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\project\engine\math">
+      <UniqueIdentifier>{29173104-c566-424e-8453-f9eb678a23b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\project">
+      <UniqueIdentifier>{205d6cae-610e-46ac-8e8b-8f5c584b40e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\project\engine">
+      <UniqueIdentifier>{69788892-12b5-41c8-a32b-1766f6455e4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\project\engine\2d">
+      <UniqueIdentifier>{de94005d-a775-4b15-8828-1477f5fa957a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\project\engine\3d">
+      <UniqueIdentifier>{c4bfc2c1-9a00-4788-9ca7-4a25d385df82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\project\engine\audio">
+      <UniqueIdentifier>{6b779b95-3ba8-403f-b92d-dc8f39a24ece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\project\engine\base">
+      <UniqueIdentifier>{386f805d-5a74-473f-9812-e021db292726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\project\engine\io">
+      <UniqueIdentifier>{775a2b38-16fd-4188-873e-73367143bcf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\project\engine\scene">
+      <UniqueIdentifier>{ba433cdf-128c-465c-9ec9-32e846406b65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\project\engine\math">
+      <UniqueIdentifier>{9cd2feaa-1220-4c64-bcf6-332f151d4941}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="externals\imgui\imgui.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
@@ -45,33 +93,34 @@
     <ClCompile Include="externals\imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="project\engine\base\DirectXCommon.cpp">
+      <Filter>ソース ファイル\project\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="WinApp.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="project\engine\io\Input.cpp">
+      <Filter>ソース ファイル\project\engine\io</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXCommon.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="project\engine\base\Logger.cpp">
+      <Filter>ソース ファイル\project\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="Logger.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="project\engine\math\math.cpp">
+      <Filter>ソース ファイル\project\engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="StringUtility.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="project\engine\2d\Sprite.cpp">
+      <Filter>ソース ファイル\project\engine\2d</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteCommon.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="project\engine\2d\SpriteCommon.cpp">
+      <Filter>ソース ファイル\project\engine\2d</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="project\engine\2d\TextureManager.cpp">
+      <Filter>ソース ファイル\project\engine\2d</Filter>
     </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="project\engine\base\WinApp.cpp">
+      <Filter>ソース ファイル\project\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="math.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="project\engine\base\StringUtility.cpp">
+      <Filter>ソース ファイル\project\engine\base</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\Object3d.VS.hlsl" />
@@ -102,32 +151,32 @@
     <ClInclude Include="externals\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="project\engine\io\Input.h">
+      <Filter>ヘッダー ファイル\project\engine\io</Filter>
     </ClInclude>
-    <ClInclude Include="WinApp.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="project\engine\base\DirectXCommon.h">
+      <Filter>ヘッダー ファイル\project\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="DirectXCommon.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="project\engine\base\Logger.h">
+      <Filter>ヘッダー ファイル\project\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="Logger.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="project\engine\math\math.h">
+      <Filter>ヘッダー ファイル\project\engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="StringUtility.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="project\engine\base\StringUtility.h">
+      <Filter>ヘッダー ファイル\project\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteCommon.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="project\engine\base\WinApp.h">
+      <Filter>ヘッダー ファイル\project\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="project\engine\2d\Sprite.h">
+      <Filter>ヘッダー ファイル\project\engine\2d</Filter>
     </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="project\engine\2d\SpriteCommon.h">
+      <Filter>ヘッダー ファイル\project\engine\2d</Filter>
     </ClInclude>
-    <ClInclude Include="math.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="project\engine\2d\TextureManager.h">
+      <Filter>ヘッダー ファイル\project\engine\2d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

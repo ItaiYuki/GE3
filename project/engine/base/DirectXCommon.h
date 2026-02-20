@@ -62,7 +62,7 @@ public:
     return commandList.Get();
   }
 
-  // シェーダ－コンパイル
+  // シェーダ－コンパイル----------------------------------
   Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring &filePath,
                                                  const wchar_t *profile);
 
@@ -76,6 +76,9 @@ public:
                          const DirectX::ScratchImage &mipImages);
 
   static DirectX::ScratchImage LoadTexture(const std::string &filePath);
+
+  // 最大SRV数（最大テクスチャ枚数）
+  static const uint32_t kMaxSRVCount;
 
 private:
   // DirectX12デバイス

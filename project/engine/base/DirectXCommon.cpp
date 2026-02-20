@@ -21,6 +21,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
 
 using namespace Microsoft::WRL;
 
+const uint32_t DirectXCommon::kMaxSRVCount = 512;
+
 void DirectXCommon::Initialize(WinApp *winApp) {
   // FPS固定初期化
   InitializeFixFPS();
@@ -231,7 +233,7 @@ void DirectXCommon::CreateDescriptorHeapRTVDSV() {
 
   // SRV用のヒープでデイスクリプタの数は128。SRVはShader内で触るものなので、ShaderVIsibleはture
   srvDescriptorHeap =
-      CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+      CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 }
 
 Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>
