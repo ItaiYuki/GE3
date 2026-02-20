@@ -21,6 +21,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
 
 using namespace Microsoft::WRL;
 
+const uint32_t DirectXCommon::kMaxSRVCount = 512;
+
 void DirectXCommon::Initialize(WinApp *winApp) {
   // FPS固定初期化
   InitializeFixFPS();
@@ -31,32 +33,32 @@ void DirectXCommon::Initialize(WinApp *winApp) {
   // メンバ変数に記録
   this->winApp = winApp;
 
-  Microsoft::WRL::ComPtr<ID3DBlob> CreateDevice();
+  CreateDevice();
 
-  Microsoft::WRL::ComPtr<ID3DBlob> CreateCommandQueue();
+  CreateCommandQueue();
 
-  Microsoft::WRL::ComPtr<ID3DBlob> CreateSwapChain();
+  CreateSwapChain();
 
-  Microsoft::WRL::ComPtr<ID3DBlob> CreateDepthBuffer();
+  CreateDepthBuffer();
 
-  Microsoft::WRL::ComPtr<ID3DBlob> CreateDescriptorHeapRTVDSV();
+  CreateDescriptorHeapRTVDSV();
 
-  Microsoft::WRL::ComPtr<ID3DBlob> CreateRenderTargetViews();
+  CreateRenderTargetViews();
 
-  Microsoft::WRL::ComPtr<ID3DBlob> CreateDepthStencilView();
+  CreateDepthStencilView();
 
- Microsoft::WRL::ComPtr<ID3DBlob> CreateFence();
+  CreateFence();
 
-  Microsoft::WRL::ComPtr<ID3DBlob> InitializeViewport();
+  InitializeViewport();
 
- Microsoft::WRL::ComPtr<ID3DBlob> InitializeScissorRect();
+  InitializeScissorRect();
 
-  Microsoft::WRL::ComPtr<ID3DBlob> CreateDXCCompiler();
+  CreateDXCCompiler();
 
-  Microsoft::WRL::ComPtr<ID3DBlob> InitializeImGui();
+  InitializeImGui();
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDevice() {
+void DirectXCommon::CreateDevice() {
 #ifdef _DEBUG
   ComPtr<ID3D12Debug1> debugController = nullptr;
   if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
@@ -144,7 +146,7 @@ true);*/
   /* Logger::Log("Complete create D3D12Device!!!\n");*/
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateCommandQueue() {
+void DirectXCommon::CreateCommandQueue() {
 
   HRESULT hr;
 
@@ -166,7 +168,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateCommandQueue() {
   assert(SUCCEEDED(hr));
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateSwapChain() {
+void DirectXCommon::CreateSwapChain() {
   HRESULT hr;
 
   swapChainDesc.Width = WinApp::kClientWidth;
@@ -183,7 +185,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateSwapChain() {
   assert(SUCCEEDED(hr));
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDepthBuffer() {
+void DirectXCommon::CreateDepthBuffer() {
   // 生成するResourceの設定
   D3D12_RESOURCE_DESC resourceDesc{};
   resourceDesc.Width = winApp->kClientWidth;   // Textureの幅
@@ -217,7 +219,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDepthBuffer() {
   assert(SUCCEEDED(hr));
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDescriptorHeapRTVDSV() {
+void DirectXCommon::CreateDescriptorHeapRTVDSV() {
   descriptorSizeSRV = device->GetDescriptorHandleIncrementSize(
       D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
@@ -231,7 +233,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDescriptorHeapRTVDSV() {
 
   // SRV用のヒープでデイスクリプタの数は128。SRVはShader内で触るものなので、ShaderVIsibleはture
   srvDescriptorHeap =
-      CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+      CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 }
 
 Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>
@@ -251,7 +253,7 @@ DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType,
   return descriptorHeap;
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateRenderTargetViews() {
+void DirectXCommon::CreateRenderTargetViews() {
   HRESULT hr;
 
   hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
@@ -290,7 +292,7 @@ DirectXCommon::GetSRVGPUDescriptorHandle(uint32_t index) {
   return GetGPUDescriptorHandle(srvDescriptorHeap, descriptorSizeSRV, index);
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDepthStencilView() {
+void DirectXCommon::CreateDepthStencilView() {
 
   // DSVの設定
   D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
@@ -302,7 +304,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDepthStencilView() {
       dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateFence() {
+void DirectXCommon::CreateFence() {
   HRESULT hr;
 
   hr = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE,
@@ -314,7 +316,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateFence() {
   assert(fenceEvent != nullptr);
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeViewport() {
+void DirectXCommon::InitializeViewport() {
   // ビューボート
 
   // クライアント領域のサイズと一緒にして画面全体に表示
@@ -326,7 +328,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeViewport() {
   viewport.MaxDepth = 1.0f;
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeScissorRect() {
+void DirectXCommon::InitializeScissorRect() {
 
   // 基本的にビューボートと同じ矩形が構成されるようにする
   scissorRect.left = 0;
@@ -335,7 +337,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeScissorRect() {
   scissorRect.bottom = WinApp::kClientHeight;
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDXCCompiler() {
+void DirectXCommon::CreateDXCCompiler() {
   HRESULT hr;
 
   hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));
@@ -347,7 +349,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::CreateDXCCompiler() {
   assert(SUCCEEDED(hr));
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeImGui() {
+void DirectXCommon::InitializeImGui() {
   // ImGuiの初期化。詳細はさして重要ではないので解説は省略する。
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -359,7 +361,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeImGui() {
                       srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::PreDraw() {
+void DirectXCommon::PreDraw() {
 
   // これから書き込むバックバッファのインデックスを取得
   UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
@@ -406,7 +408,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::PreDraw() {
   commandList->RSSetScissorRects(1, &scissorRect); // Scissorを設定
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::PostDraw() {
+void DirectXCommon::PostDraw() {
   HRESULT hr;
 
   UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
@@ -584,7 +586,7 @@ DirectXCommon::CreateTextureResource(const DirectX::TexMetadata &metadata) {
   return resource;
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::UploadTextureData(
+void DirectXCommon::UploadTextureData(
     const Microsoft::WRL::ComPtr<ID3D12Resource> &texture,
     const DirectX::ScratchImage &mipImages) {
   // Meta情報を取得
@@ -643,12 +645,12 @@ D3D12_GPU_DESCRIPTOR_HANDLE DirectXCommon::GetGPUDescriptorHandle(
   return handle;
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::InitializeFixFPS() {
+void DirectXCommon::InitializeFixFPS() {
   // 現在時間を記録する
   reference_ = std::chrono::steady_clock::now();
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> DirectXCommon::UpdateFixFPS() {
+void DirectXCommon::UpdateFixFPS() {
   // 1/60秒ぴったりの時間
   const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
   // 1/60秒よりわずかに短い時間

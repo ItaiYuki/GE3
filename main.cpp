@@ -21,7 +21,7 @@
 #include "SpriteCommon.h"
 #include "StringUtility.h"
 #include "TextureManager.h"
-#include "math.h"
+#include "Mymath.h"
 
 #include "D3DResourceLeakChecker.h"
 #include <dinput.h>

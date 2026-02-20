@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "SpriteCommon.h"
-#include "math.h"
+#include "Mymath.h"
 #include <cmath>
 #include <cstdint>
 #include <d3d12.h>
