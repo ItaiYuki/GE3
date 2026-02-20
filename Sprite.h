@@ -43,6 +43,9 @@ public: // メンバ関数
   float GetRotation() const { return rotation; }
   const math::Vector4 GetColor() const { return materialData->color; }
   const math::Vector2 &GetSize() const { return size; }
+  const math::Vector2 &GetAnchorPoint() const { return anchorPoint; }
+  const bool IsFlipX() const { return isFlipX_; }
+  const bool IsFlipY() const { return isFlipY_; }
   const math::Vector2 &GetTextureLeftTop() const { return textureLeftTop; }
   const math::Vector2 &GetTextureSize() const { return textureSize; }
 
@@ -50,6 +53,11 @@ public: // メンバ関数
   void SetPosition(const math::Vector2 &position) { this->position = position; }
   void SetRotation(float rotation) { this->rotation = rotation; }
   void SetColor(const math::Vector4 &color) { materialData->color = color; }
+  void SetAnchorPoint(const math::Vector2 &anchorPoint) {
+    this->anchorPoint = anchorPoint;
+  }
+  void SetFlipX(bool isFlipX_) { this->isFlipX_ = isFlipX_; }
+  void SetFlipY(bool isFlipY_) { this->isFlipY_ = isFlipY_; }
   void SetSize(const math::Vector2 &size) { this->size = size; }
   void SetTextureLeftTop(const math::Vector2 &textureLeftTop) {
     this->textureLeftTop = textureLeftTop;
@@ -60,6 +68,9 @@ public: // メンバ関数
 
 private:
   SpriteCommon *spriteCommon_ = nullptr;
+
+  // テクスチャサイズをイメージに合わせる
+  void AbjustTextureSize();
 
   // テクスチャ番号
   uint32_t textureIndex = 0;
@@ -101,8 +112,15 @@ private:
   // サイズ
   math::Vector2 size = {640.0f, 360.0f};
 
+  math::Vector2 anchorPoint = {0.0f, 0.0f};
+
+  // 左右フリップ
+  bool isFlipX_ = false;
+  // 上下フリップ
+  bool isFlipY_ = false;
+
   // テクスチャ左上座標
   math::Vector2 textureLeftTop = {0.0f, 0.0f};
   // テクスチャ切り出しサイズ
-  math::Vector2 textureSize = {100.0f, 100.0f};
+  math::Vector2 textureSize = {1200.0f, 1200.0f};
 };
