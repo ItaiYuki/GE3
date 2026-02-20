@@ -70,6 +70,9 @@
     <Filter Include="ヘッダー ファイル\project\engine\scene">
       <UniqueIdentifier>{98866e36-23be-44a8-9542-1085e748236d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\project\application">
+      <UniqueIdentifier>{caf27385-fe77-40ff-b41a-3c9bd1ff1e03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
