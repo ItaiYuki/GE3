@@ -87,6 +87,16 @@ void Sprite::Update() {
   transform.translate = {position.x, position.y, 0.0f};
   // 回転
   transform.rotate = {0.0f, 0.0f, rotation};
+
+  // テクスチャ範囲指定
+  const DirectX::TexMetadata &metadata =
+      TextureManager::GetInstance()->GetMetaData(textureIndex);
+  float tex_left = textureLeftTop.x / metadata.width;
+  float tex_right = (textureLeftTop.x + textureSize.x) / metadata.width;
+  float tex_top = textureLeftTop.y / metadata.height;
+  float tex_bottom = (textureLeftTop.y + textureSize.y) / metadata.height;
+
+
   // サイズ
   //  頂点リソースにデータを書き込む
   // 左下

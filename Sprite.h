@@ -10,8 +10,7 @@ class SpriteCommon;
 class Sprite {
 public: // メンバ関数
   // 初期化
-  void Initialize(SpriteCommon *spriteCommon, std::string textureFilePath
-  );
+  void Initialize(SpriteCommon *spriteCommon, std::string textureFilePath);
 
   // 更新
   void Update();
@@ -44,12 +43,20 @@ public: // メンバ関数
   float GetRotation() const { return rotation; }
   const math::Vector4 GetColor() const { return materialData->color; }
   const math::Vector2 &GetSize() const { return size; }
+  const math::Vector2 &GetTextureLeftTop() const { return textureLeftTop; }
+  const math::Vector2 &GetTextureSize() const { return textureSize; }
 
   // setter//
   void SetPosition(const math::Vector2 &position) { this->position = position; }
   void SetRotation(float rotation) { this->rotation = rotation; }
   void SetColor(const math::Vector4 &color) { materialData->color = color; }
   void SetSize(const math::Vector2 &size) { this->size = size; }
+  void SetTextureLeftTop(const math::Vector2 &textureLeftTop) {
+    this->textureLeftTop = textureLeftTop;
+  }
+  void SetTextureSize(const math::Vector2 &textureSize) {
+    this->textureSize = textureSize;
+  }
 
 private:
   SpriteCommon *spriteCommon_ = nullptr;
@@ -93,4 +100,9 @@ private:
 
   // サイズ
   math::Vector2 size = {640.0f, 360.0f};
+
+  // テクスチャ左上座標
+  math::Vector2 textureLeftTop = {0.0f, 0.0f};
+  // テクスチャ切り出しサイズ
+  math::Vector2 textureSize = {100.0f, 100.0f};
 };

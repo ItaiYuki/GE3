@@ -113,6 +113,7 @@ void SpriteCommon::CreateGraphicsPipelineState() {
   blendDesc.RenderTarget[0].RenderTargetWriteMask =
       D3D12_COLOR_WRITE_ENABLE_ALL;
 
+  // グラヒィックスパイプレインの生成
   // RasiterZerStateの設定
   D3D12_RASTERIZER_DESC rasterizeDesc{};
   // 裏面（時計周り）を表示しない

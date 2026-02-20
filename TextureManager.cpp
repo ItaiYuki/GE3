@@ -17,10 +17,10 @@ TextureManager *TextureManager::GetInstance() {
 }
 
 void TextureManager::Initialize(DirectXCommon *dxCommon) {
- 
+
   this->dxCommon = dxCommon;
-    
-    // SRVの数と同数
+
+  // SRVの数と同数
   textureDatas.reserve(DirectXCommon::kMaxSRVCount);
 }
 
@@ -92,6 +92,15 @@ TextureManager::GetSrvHandleGPU(uint32_t textureIndex) {
 
   TextureData &textureData = textureDatas[textureIndex];
   return textureData.srvHandleGPU;
+}
+
+const DirectX::TexMetadata &TextureManager::GetMetaData(uint32_t textureIndex) {
+
+  // 範囲外指定違反チェック
+  assert(textureIndex < textureDatas.size());
+
+  TextureData &textureData = textureDatas[textureIndex];
+  return textureData.metadata;
 }
 
 uint32_t
