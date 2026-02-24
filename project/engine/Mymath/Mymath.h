@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace math {
+namespace MyMath {
 
 struct Vector2 {
   float x;

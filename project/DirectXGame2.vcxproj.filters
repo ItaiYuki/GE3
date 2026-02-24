@@ -78,13 +78,25 @@
     <ClCompile Include="engine\base\Logger.cpp">
       <Filter>engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\SpriteCommon.cpp">
-      <Filter>engine\base</Filter>
-    </ClCompile>
     <ClCompile Include="engine\base\StringUtility.cpp">
       <Filter>engine\base</Filter>
     </ClCompile>
     <ClCompile Include="engine\base\WinApp.cpp">
+      <Filter>engine\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\D3DResourceLeakChecker.cpp">
+      <Filter>engine\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\2d\Sprite.cpp">
+      <Filter>engine\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\2d\SpriteCommon.cpp">
+      <Filter>engine\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\Mymath\Mymath.cpp">
+      <Filter>engine\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\TextureManager.cpp">
       <Filter>engine\base</Filter>
     </ClCompile>
   </ItemGroup>
@@ -126,13 +138,25 @@
     <ClInclude Include="engine\base\Logger.h">
       <Filter>engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\SpriteCommon.h">
-      <Filter>engine\base</Filter>
-    </ClInclude>
     <ClInclude Include="engine\base\StringUtility.h">
       <Filter>engine\base</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\WinApp.h">
+      <Filter>engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\D3DResourceLeakChecker.h">
+      <Filter>engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Mymath\Mymath.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\2d\Sprite.h">
+      <Filter>engine\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\2d\SpriteCommon.h">
+      <Filter>engine\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\TextureManager.h">
       <Filter>engine\base</Filter>
     </ClInclude>
   </ItemGroup>

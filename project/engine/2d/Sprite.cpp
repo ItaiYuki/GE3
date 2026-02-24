@@ -4,7 +4,7 @@
 #include "WinApp.h"
 #include "TextureManager.h"
 
-using namespace math;
+using namespace MyMath;
 
 void Sprite::Initialize(SpriteCommon *spriteCommon,
                         std::string textureFilePath) {
@@ -70,8 +70,8 @@ void Sprite::Initialize(SpriteCommon *spriteCommon,
   transformationMatrixResource->Map(
       0, nullptr, reinterpret_cast<void **>(&transformationMatrixData));
   // 単位行列を書きこんでおく
-  transformationMatrixData->WVP = math::Math::MakeIdentity4x4();
-  transformationMatrixData->World = math::Math::MakeIdentity4x4();
+  transformationMatrixData->WVP = MyMath::Math::MakeIdentity4x4();
+  transformationMatrixData->World = MyMath::Math::MakeIdentity4x4();
 
   transform = {};
   transform.scale = {1.0f, 1.0f, 1.0f};
@@ -135,16 +135,16 @@ void Sprite::Update() {
   transform.scale = {size.x, size.y, 1.0f};
 
   // Sprite用のWorldViewProjectionMatrixを作る
-  math::Matrix4x4 worldMatrix = math::Math::MakeAffineMatrix(
+  MyMath::Matrix4x4 worldMatrix = MyMath::Math::MakeAffineMatrix(
       transform.scale, transform.rotate, transform.translate);
-  Matrix4x4 viewMatrix = math::Math::MakeIdentity4x4();
-  Matrix4x4 projectionMatrix = math::Math::MakeOrthographicMatrix(
+  Matrix4x4 viewMatrix = MyMath::Math::MakeIdentity4x4();
+  Matrix4x4 projectionMatrix = MyMath::Math::MakeOrthographicMatrix(
       0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight),
       0.0f, 100.0f);
   // Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite,
   // Multiply(viewMatrixSprite, projectionMatrixSprite));
-  transformationMatrixData->WVP = math::Math::Multiply(
-      worldMatrix, math::Math::Multiply(viewMatrix, projectionMatrix));
+  transformationMatrixData->WVP = MyMath::Math::Multiply(
+      worldMatrix, MyMath::Math::Multiply(viewMatrix, projectionMatrix));
   transformationMatrixData->World = worldMatrix;
 }
 

@@ -1,7 +1,7 @@
 #include "Mymath.h"
 #include <cassert>
 
-using namespace math;
+using namespace MyMath;
 
 Matrix4x4 Math::MakeIdentity4x4() {
   Matrix4x4 identity{};
@@ -132,7 +132,7 @@ Matrix4x4 Math::MakeOrthographicMatrix(float left, float top, float right,
   return result;
 }
 
-Matrix4x4 math::Math::Inverse(const Matrix4x4 &m) {
+Matrix4x4 MyMath::Math::Inverse(const Matrix4x4 &m) {
   float determinant = +m.m[0][0] * m.m[1][1] * m.m[2][2] * m.m[3][3] +
                       m.m[0][0] * m.m[1][2] * m.m[2][3] * m.m[3][1] +
                       m.m[0][0] * m.m[1][3] * m.m[2][1] * m.m[3][2];

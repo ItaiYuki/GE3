@@ -486,7 +486,7 @@ DirectXCommon::CompileShader(const std::wstring &filePath,
       profile, // shaderProfileの設定
       L"-Zi",
       L"-Qembed_debug", // デバッグ用の情報を埋め込む
-      L"Od",            // 最適化を外しておく
+      L"-Od",            // 最適化を外しておく
       L"-Zpr",          // メモリレイアウトは行優先
   };
 
