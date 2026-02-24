@@ -1,4 +1,4 @@
-name: DebugBuild
+name: DevelopmentBuild
 
 on:
   push:
@@ -7,9 +7,9 @@ on:
       
 env:
   # リポジトリのルートディレクトリを基点としたソリューションファイルのパス
-  SOLUTION_FILE_PATH: project/DirectXGame2.sln
+  SOLUTION_FILE_PATH: project/CG2.sln
   # Visual Studio の構成(Debug / Release )
-  CONFIGURATION: Debug
+  CONFIGURATION: Development
 
 jobs:
   build:
