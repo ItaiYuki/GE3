@@ -34,6 +34,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd,
                                                              WPARAM wParam,
                                                              LPARAM lParam);
 
+
 #pragma comment(lib, "dxguid.lib")
 
 using namespace StringUtility;
