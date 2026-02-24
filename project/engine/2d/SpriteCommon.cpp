@@ -125,11 +125,11 @@ void SpriteCommon::CreateGraphicsPipelineState() {
 
   // shaderをコンバイルする
   Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob =
-      dxCommon_->CompileShader(L"Object3d.VS.hlsl", L"vs_6_0");
+      dxCommon_->CompileShader(L"resources/shaders/Object3d.VS.hlsl", L"vs_6_0");
   assert(vertexShaderBlob != nullptr);
 
   Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob =
-      dxCommon_->CompileShader(L"Object3d.PS.hlsl", L"ps_6_0");
+      dxCommon_->CompileShader(L"resources/shaders/Object3d.PS.hlsl", L"ps_6_0");
   assert(pixelShaderBlob != nullptr);
 
   // PSOを生成する//P38
